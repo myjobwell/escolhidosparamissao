@@ -1,50 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'presentation/pages/usuarios_page.dart'; // ← ESSA LINHA FALTAVA
+import 'features/home/pages/home_page.dart';
+import 'firebase_options.dart'; // Este arquivo é gerado pelo Firebase CLI
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  await Firebase.initializeApp(
+    options:
+        DefaultFirebaseOptions
+            .currentPlatform, // Requer configuração Firebase CLI
+  );
+  runApp(const MipsApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MipsApp extends StatelessWidget {
+  const MipsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CRUD Usuários',
-      home: UserCrudPage(), // ← FUNCIONA AGORA
+      title: 'MIPS+',
+      debugShowCheckedModeBanner: false,
+      home: const HomePage(),
     );
   }
 }
-
-
-
-
-/*
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'presentation/pages/igreja_filter_page.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Filtro de Igrejas',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const IgrejaFilterPage(),
-    );
-  }
-}
-*/
