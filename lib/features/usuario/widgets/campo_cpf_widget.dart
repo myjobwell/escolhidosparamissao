@@ -19,30 +19,28 @@ class CampoCpfWidget extends StatefulWidget {
 
 class _CampoCpfWidgetState extends State<CampoCpfWidget> {
   final FocusNode _cpfFocus = FocusNode();
-
   bool _cpfDuplicado = false;
-  bool _cpfInvalido = false;
   bool _campoInteragido = false;
 
   @override
   void initState() {
     super.initState();
+
     _cpfFocus.addListener(() {
       if (!_cpfFocus.hasFocus && widget.controller.text.isNotEmpty) {
         _campoInteragido = true;
+        final cpf = _limparCpf(widget.controller.text);
 
-        final cpf = widget.controller.text.replaceAll(RegExp(r'[^0-9]'), '');
-
-        if (!validarCpf(cpf)) {
+        if (validarCpf(cpf)) {
+          _verificarCpfDuplicado(cpf);
+        } else {
           setState(() {
-            _cpfInvalido = true;
             _cpfDuplicado = false;
             widget.onCpfCheck(false);
           });
-          Form.of(context)?.validate();
-        } else {
-          _cpfInvalido = false;
-          _verificarCpfDuplicado(cpf);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Form.of(context)?.validate();
+          });
         }
       }
     });
@@ -65,6 +63,8 @@ class _CampoCpfWidgetState extends State<CampoCpfWidget> {
     });
   }
 
+  String _limparCpf(String input) => input.replaceAll(RegExp(r'[^0-9]'), '');
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -79,19 +79,11 @@ class _CampoCpfWidgetState extends State<CampoCpfWidget> {
         }
       },
       validator: (value) {
-        final cpf = value?.replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+        final cpf = _limparCpf(value ?? '');
 
-        if (!_campoInteragido && (value == null || value.isEmpty)) {
-          return null;
-        }
-
-        if (cpf.length != 11 || !validarCpf(cpf)) {
-          return 'CPF inválido';
-        }
-
-        if (_cpfDuplicado) {
-          return 'CPF já cadastrado';
-        }
+        if (!_campoInteragido && cpf.isEmpty) return null;
+        if (cpf.length != 11 || !validarCpf(cpf)) return 'CPF inválido';
+        if (_cpfDuplicado) return 'CPF já cadastrado';
 
         return null;
       },
