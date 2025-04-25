@@ -22,7 +22,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   late TextEditingController _telefone;
 
   String? _selectedDistritoId;
-  String? _selectedDistritoNome;
   String? _selectedIgrejaId;
   String? _selectedIgrejaNome;
 
@@ -33,6 +32,10 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
     mask: '###.###.###-##',
     filter: {"#": RegExp(r'[0-9]')},
   );
+
+  final FocusNode _cpfFocus = FocusNode();
+  bool _cpfDuplicado = false;
+  String? _cpfErroMensagem;
 
   @override
   void initState() {
@@ -46,6 +49,12 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
     _sexo = TextEditingController(text: u?.sexo);
     _telefone = TextEditingController(text: u?.telefone.toString());
 
+    _cpfFocus.addListener(() {
+      if (!_cpfFocus.hasFocus) {
+        _verificarCpfDuplicado(_cpf.text);
+      }
+    });
+
     _fetchDistritos();
     if (u != null) {
       _selectedDistritoId = u.distrito;
@@ -53,6 +62,23 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
       _fetchIgrejas(u.distrito);
     }
     super.initState();
+  }
+
+  Future<void> _verificarCpfDuplicado(String cpf) async {
+    final cpfLimpo = cpf.replaceAll(RegExp(r'[^0-9]'), '');
+
+    final resultado =
+        await FirebaseFirestore.instance
+            .collection('usuarios')
+            .where('cpf', isEqualTo: cpfLimpo)
+            .get();
+
+    setState(() {
+      _cpfDuplicado = resultado.docs.isNotEmpty;
+      _cpfErroMensagem = _cpfDuplicado ? 'CPF já cadastrado' : null;
+    });
+
+    _formKey.currentState?.validate();
   }
 
   Future<void> _fetchDistritos() async {
@@ -86,18 +112,29 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         Usuario(
           id: widget.usuario?.id,
           nome: _nome.text,
-          cpf: _cpf.text,
+          cpf: _cpf.text.replaceAll(RegExp(r'[^0-9]'), ''),
           dataNascimento: DateTime.parse(_dataNascimento.text),
           distrito: _selectedDistritoId ?? '',
           igrejaId: _selectedIgrejaId ?? '',
           nomeIgreja: _selectedIgrejaNome ?? '',
           sexo: _sexo.text,
           telefone: int.parse(_telefone.text),
-          tipoUsuario: 'Professor', // Valor fixo
-          ativo: 'S', // Valor fixo
+          tipoUsuario: 'Professor',
+          ativo: 'S',
         ),
       );
     }
+  }
+
+  bool _isFormValido() {
+    return !_cpfDuplicado &&
+        _nome.text.isNotEmpty &&
+        _cpf.text.length == 14 &&
+        _dataNascimento.text.isNotEmpty &&
+        _selectedDistritoId != null &&
+        _selectedIgrejaId != null &&
+        _sexo.text.isNotEmpty &&
+        _telefone.text.isNotEmpty;
   }
 
   @override
@@ -108,10 +145,11 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         children: [
           TextFormField(
             controller: _nome,
-            decoration: InputDecoration(labelText: 'Nome'),
+            decoration: const InputDecoration(labelText: 'Nome'),
           ),
           TextFormField(
             controller: _cpf,
+            focusNode: _cpfFocus,
             decoration: const InputDecoration(labelText: 'CPF'),
             inputFormatters: [cpfFormatter],
             keyboardType: TextInputType.number,
@@ -119,18 +157,21 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
               if (value == null || value.isEmpty || value.length != 14) {
                 return 'CPF inválido';
               }
+              if (_cpfErroMensagem != null) {
+                return _cpfErroMensagem;
+              }
               return null;
             },
           ),
           TextFormField(
             controller: _dataNascimento,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Data de Nascimento yyyy-MM-dd',
             ),
           ),
           DropdownButtonFormField<String>(
             value: _selectedDistritoId,
-            decoration: InputDecoration(labelText: 'Distrito'),
+            decoration: const InputDecoration(labelText: 'Distrito'),
             items:
                 _distritos.map((distrito) {
                   return DropdownMenuItem<String>(
@@ -149,7 +190,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           ),
           DropdownButtonFormField<String>(
             value: _selectedIgrejaId,
-            decoration: InputDecoration(labelText: 'Igreja'),
+            decoration: const InputDecoration(labelText: 'Igreja'),
             items:
                 _igrejas.map((igreja) {
                   return DropdownMenuItem<String>(
@@ -167,13 +208,18 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           ),
           TextFormField(
             controller: _sexo,
-            decoration: InputDecoration(labelText: 'Sexo'),
+            decoration: const InputDecoration(labelText: 'Sexo'),
           ),
           TextFormField(
             controller: _telefone,
-            decoration: InputDecoration(labelText: 'Telefone'),
+            decoration: const InputDecoration(labelText: 'Telefone'),
+            keyboardType: TextInputType.number,
           ),
-          ElevatedButton(onPressed: _submit, child: Text('Salvar')),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _isFormValido() ? _submit : null,
+            child: const Text('Salvar'),
+          ),
         ],
       ),
     );

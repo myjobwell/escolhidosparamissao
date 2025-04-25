@@ -1,0 +1,17 @@
+# Usa LF como terminador de linha para todos os arquivos de texto
+* text=auto eol=lf
+
+# Arquivos Dart
+*.dart text eol=lf
+
+# Arquivos de configuração
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.xml text eol=lf
+
+# Scripts
+*.sh text eol=lf
+*.bat text eol=crlf
