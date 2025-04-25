@@ -9,3 +9,8 @@ final dataNascimentoFormatter = MaskTextInputFormatter(
   mask: '##/##/####',
   filter: {"#": RegExp(r'[0-9]')},
 );
+
+final telefoneFormatter = MaskTextInputFormatter(
+  mask: '(##) #####-####',
+  filter: {"#": RegExp(r'[0-9]')},
+);

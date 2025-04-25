@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../utils/masks.dart';
 
 class CampoTelefoneWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -12,13 +13,10 @@ class CampoTelefoneWidget extends StatelessWidget {
       controller: controller,
       decoration: const InputDecoration(labelText: 'Telefone'),
       keyboardType: TextInputType.phone,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(11),
-      ],
+      inputFormatters: [telefoneFormatter],
       validator: (value) {
         if (value == null || value.isEmpty) return 'Informe o telefone';
-        if (value.length < 10 || value.length > 11) return 'Telefone inválido';
+        if (!telefoneFormatter.isFill()) return 'Telefone incompleto';
         return null;
       },
     );

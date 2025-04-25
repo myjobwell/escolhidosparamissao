@@ -7,6 +7,7 @@ import 'widgets/campo_telefone_widget.dart';
 import 'widgets/dropdown_distrito_widget.dart';
 import 'widgets/dropdown_igreja_widget.dart';
 import 'widgets/campo_data_nascimento_widget.dart';
+import 'widgets/campo_sexo_widget.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
   final Function(Usuario usuario) onSubmit;
@@ -23,9 +24,9 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   late TextEditingController _nome;
   late TextEditingController _cpf;
   late TextEditingController _dataNascimento;
-  late TextEditingController _sexo;
   late TextEditingController _telefone;
 
+  String? _sexo;
   String? _selectedDistritoId;
   String? _selectedIgrejaId;
   String? _selectedIgrejaNome;
@@ -48,8 +49,8 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
                   "${u.dataNascimento.year}"
               : '',
     );
-    _sexo = TextEditingController(text: u?.sexo);
     _telefone = TextEditingController(text: u?.telefone.toString());
+    _sexo = u?.sexo;
 
     _fetchDistritos();
     if (u != null) {
@@ -103,7 +104,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           distrito: _selectedDistritoId ?? '',
           igrejaId: _selectedIgrejaId ?? '',
           nomeIgreja: _selectedIgrejaNome ?? '',
-          sexo: _sexo.text,
+          sexo: _sexo ?? '',
           telefone: int.parse(_telefone.text),
           tipoUsuario: 'Professor',
           ativo: 'S',
@@ -120,7 +121,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         _dataNascimento.text.length == 10 &&
         _selectedDistritoId != null &&
         _selectedIgrejaId != null &&
-        _sexo.text.isNotEmpty &&
+        _sexo != null &&
         _telefone.text.isNotEmpty;
   }
 
@@ -140,6 +141,11 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
                 (duplicado) => setState(() => _cpfDuplicado = duplicado),
           ),
           CampoDataNascimentoWidget(controller: _dataNascimento),
+          CampoTelefoneWidget(controller: _telefone),
+          CampoSexoWidget(
+            selectedSexo: _sexo,
+            onChanged: (value) => setState(() => _sexo = value),
+          ),
           DropdownDistritoWidget(
             selectedId: _selectedDistritoId,
             distritos: _distritos,
@@ -163,11 +169,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
               });
             },
           ),
-          TextFormField(
-            controller: _sexo,
-            decoration: const InputDecoration(labelText: 'Sexo'),
-          ),
-          CampoTelefoneWidget(controller: _telefone),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _isFormValido() ? _submit : null,
