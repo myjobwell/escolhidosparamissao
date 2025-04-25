@@ -19,48 +19,49 @@ class CampoCpfWidget extends StatefulWidget {
 
 class _CampoCpfWidgetState extends State<CampoCpfWidget> {
   final FocusNode _cpfFocus = FocusNode();
+
   bool _cpfDuplicado = false;
   bool _cpfInvalido = false;
+  bool _campoInteragido = false;
 
   @override
   void initState() {
     super.initState();
     _cpfFocus.addListener(() {
-      if (!_cpfFocus.hasFocus) {
-        final cpfLimpo = widget.controller.text.replaceAll(
-          RegExp(r'[^0-9]'),
-          '',
-        );
+      if (!_cpfFocus.hasFocus && widget.controller.text.isNotEmpty) {
+        _campoInteragido = true;
 
-        if (!validarCpf(cpfLimpo)) {
+        final cpf = widget.controller.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+        if (!validarCpf(cpf)) {
           setState(() {
             _cpfInvalido = true;
             _cpfDuplicado = false;
             widget.onCpfCheck(false);
           });
+          Form.of(context)?.validate();
         } else {
           _cpfInvalido = false;
-          _verificarCpfDuplicado(cpfLimpo);
+          _verificarCpfDuplicado(cpf);
         }
-
-        // Revalida para exibir mensagens
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Form.of(context)?.validate();
-        });
       }
     });
   }
 
-  Future<void> _verificarCpfDuplicado(String cpfLimpo) async {
+  Future<void> _verificarCpfDuplicado(String cpf) async {
     final resultado =
         await FirebaseFirestore.instance
             .collection('usuarios')
-            .where('cpf', isEqualTo: cpfLimpo)
+            .where('cpf', isEqualTo: cpf)
             .get();
 
     setState(() {
       _cpfDuplicado = resultado.docs.isNotEmpty;
       widget.onCpfCheck(_cpfDuplicado);
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Form.of(context)?.validate();
     });
   }
 
@@ -72,14 +73,19 @@ class _CampoCpfWidgetState extends State<CampoCpfWidget> {
       decoration: const InputDecoration(labelText: 'CPF'),
       inputFormatters: [cpfFormatter],
       keyboardType: TextInputType.number,
+      onChanged: (_) {
+        if (!_campoInteragido) {
+          setState(() => _campoInteragido = true);
+        }
+      },
       validator: (value) {
-        final cpfLimpo = value?.replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+        final cpf = value?.replaceAll(RegExp(r'[^0-9]'), '') ?? '';
 
-        if (cpfLimpo.isEmpty || cpfLimpo.length != 11) {
-          return 'CPF inválido';
+        if (!_campoInteragido && (value == null || value.isEmpty)) {
+          return null;
         }
 
-        if (_cpfInvalido) {
+        if (cpf.length != 11 || !validarCpf(cpf)) {
           return 'CPF inválido';
         }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/usuario_model.dart';
 import 'utils/validators.dart';
+import 'utils/masks.dart';
 import 'widgets/campo_cpf_widget.dart';
 import 'widgets/campo_telefone_widget.dart';
 import 'widgets/dropdown_distrito_widget.dart';
@@ -28,6 +29,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
   String? _sexo;
   String? _selectedDistritoId;
+  String? _selectedDistritoNome;
   String? _selectedIgrejaId;
   String? _selectedIgrejaNome;
 
@@ -35,6 +37,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   List<Map<String, dynamic>> _igrejas = [];
 
   bool _cpfDuplicado = false;
+  bool _formFoiEnviado = false;
 
   @override
   void initState() {
@@ -54,9 +57,10 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
     _fetchDistritos();
     if (u != null) {
-      _selectedDistritoId = u.distrito;
+      _selectedDistritoNome = u.distrito;
       _selectedIgrejaId = u.igrejaId;
-      _fetchIgrejas(u.distrito);
+      _selectedIgrejaNome = u.nomeIgreja;
+      _selectedDistritoId = null; // deixamos null para não quebrar seleção
     }
     super.initState();
   }
@@ -87,7 +91,8 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   }
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
+    setState(() => _formFoiEnviado = true);
+    if (_formKey.currentState!.validate() && _isFormValido()) {
       final partesData = _dataNascimento.text.split('/');
       final dataNascimento = DateTime(
         int.parse(partesData[2]),
@@ -101,11 +106,11 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           nome: _nome.text,
           cpf: _cpf.text.replaceAll(RegExp(r'[^0-9]'), ''),
           dataNascimento: dataNascimento,
-          distrito: _selectedDistritoId ?? '',
+          distrito: _selectedDistritoNome ?? '',
           igrejaId: _selectedIgrejaId ?? '',
           nomeIgreja: _selectedIgrejaNome ?? '',
           sexo: _sexo ?? '',
-          telefone: int.parse(_telefone.text),
+          telefone: int.parse(telefoneFormatter.getUnmaskedText()),
           tipoUsuario: 'Professor',
           ativo: 'S',
         ),
@@ -119,7 +124,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         _cpf.text.length == 14 &&
         validarCpf(_cpf.text) &&
         _dataNascimento.text.length == 10 &&
-        _selectedDistritoId != null &&
+        _selectedDistritoNome != null &&
         _selectedIgrejaId != null &&
         _sexo != null &&
         _telefone.text.isNotEmpty;
@@ -134,46 +139,60 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           TextFormField(
             controller: _nome,
             decoration: const InputDecoration(labelText: 'Nome'),
+            validator: (value) {
+              if (!_formFoiEnviado) return null;
+              if (value == null || value.isEmpty) return 'Informe o nome';
+              return null;
+            },
           ),
           CampoCpfWidget(
             controller: _cpf,
             onCpfCheck:
                 (duplicado) => setState(() => _cpfDuplicado = duplicado),
           ),
-          CampoDataNascimentoWidget(controller: _dataNascimento),
-          CampoTelefoneWidget(controller: _telefone),
+          CampoDataNascimentoWidget(
+            controller: _dataNascimento,
+            showErrors: _formFoiEnviado,
+          ),
+          CampoTelefoneWidget(
+            controller: _telefone,
+            showErrors: _formFoiEnviado,
+          ),
           CampoSexoWidget(
             selectedSexo: _sexo,
             onChanged: (value) => setState(() => _sexo = value),
+            showErrors: _formFoiEnviado,
           ),
           DropdownDistritoWidget(
             selectedId: _selectedDistritoId,
             distritos: _distritos,
             onChanged: (value) {
+              final nome =
+                  _distritos.firstWhere((d) => d['id'] == value)['nome'];
               setState(() {
                 _selectedDistritoId = value;
+                _selectedDistritoNome = nome;
                 _selectedIgrejaId = null;
                 _selectedIgrejaNome = null;
                 _fetchIgrejas(value!);
               });
             },
+            showErrors: _formFoiEnviado,
           ),
           DropdownIgrejaWidget(
             selectedId: _selectedIgrejaId,
             igrejas: _igrejas,
             onChanged: (value) {
+              final nome = _igrejas.firstWhere((i) => i['id'] == value)['nome'];
               setState(() {
                 _selectedIgrejaId = value;
-                _selectedIgrejaNome =
-                    _igrejas.firstWhere((i) => i['id'] == value)['nome'];
+                _selectedIgrejaNome = nome;
               });
             },
+            showErrors: _formFoiEnviado,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _isFormValido() ? _submit : null,
-            child: const Text('Salvar'),
-          ),
+          ElevatedButton(onPressed: _submit, child: const Text('Cadastrar')),
         ],
       ),
     );

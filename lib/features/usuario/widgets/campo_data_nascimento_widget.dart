@@ -4,28 +4,27 @@ import '../utils/masks.dart';
 
 class CampoDataNascimentoWidget extends StatelessWidget {
   final TextEditingController controller;
+  final bool showErrors;
 
-  const CampoDataNascimentoWidget({super.key, required this.controller});
+  const CampoDataNascimentoWidget({
+    super.key,
+    required this.controller,
+    required this.showErrors,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      decoration: const InputDecoration(
-        labelText: 'Data de Nascimento (dd/MM/yyyy)',
-      ),
+      decoration: const InputDecoration(labelText: 'Data de Nascimento'),
+      keyboardType: TextInputType.datetime,
       inputFormatters: [dataNascimentoFormatter],
-      keyboardType: TextInputType.number,
       validator: (value) {
-        if (value == null || value.isEmpty || value.length != 10) {
-          return 'Informe a data no formato correto';
-        }
-        final partes = value.split('/');
-        if (partes.length != 3) return 'Data inválida';
-        final dia = int.tryParse(partes[0]);
-        final mes = int.tryParse(partes[1]);
-        final ano = int.tryParse(partes[2]);
-        if (dia == null || mes == null || ano == null) return 'Data inválida';
+        if (!showErrors) return null;
+        if (value == null || value.isEmpty)
+          return 'Informe a data de nascimento';
+        if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value))
+          return 'Formato inválido';
         return null;
       },
     );
