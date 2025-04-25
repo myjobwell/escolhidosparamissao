@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/usuario_model.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
   final Function(Usuario usuario) onSubmit;
@@ -27,6 +28,11 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
   List<Map<String, dynamic>> _distritos = [];
   List<Map<String, dynamic>> _igrejas = [];
+
+  final cpfFormatter = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
   @override
   void initState() {
@@ -106,7 +112,15 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           ),
           TextFormField(
             controller: _cpf,
-            decoration: InputDecoration(labelText: 'CPF'),
+            decoration: const InputDecoration(labelText: 'CPF'),
+            inputFormatters: [cpfFormatter],
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value == null || value.isEmpty || value.length != 14) {
+                return 'CPF inválido';
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _dataNascimento,
