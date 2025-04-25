@@ -130,6 +130,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
     return !_cpfDuplicado &&
         _nome.text.isNotEmpty &&
         _cpf.text.length == 14 &&
+        validarCpf(_cpf.text) &&
         _dataNascimento.text.isNotEmpty &&
         _selectedDistritoId != null &&
         _selectedIgrejaId != null &&
@@ -155,6 +156,9 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
             keyboardType: TextInputType.number,
             validator: (value) {
               if (value == null || value.isEmpty || value.length != 14) {
+                return 'CPF inválido';
+              }
+              if (!validarCpf(value)) {
                 return 'CPF inválido';
               }
               if (_cpfErroMensagem != null) {
@@ -223,5 +227,23 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         ],
       ),
     );
+  }
+
+  bool validarCpf(String cpf) {
+    cpf = cpf.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cpf.length != 11 || RegExp(r'^(\d)\1*$').hasMatch(cpf)) return false;
+
+    List<int> digits = cpf.split('').map(int.parse).toList();
+
+    int calc(int start, int count) {
+      int sum = 0;
+      for (int i = 0; i < count; i++) {
+        sum += digits[i] * (start - i);
+      }
+      int mod = sum % 11;
+      return mod < 2 ? 0 : 11 - mod;
+    }
+
+    return digits[9] == calc(10, 9) && digits[10] == calc(11, 10);
   }
 }
