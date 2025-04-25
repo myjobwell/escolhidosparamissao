@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/usuario_model.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
@@ -16,13 +17,16 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   late TextEditingController _nome;
   late TextEditingController _cpf;
   late TextEditingController _dataNascimento;
-  late TextEditingController _distrito;
-  late TextEditingController _igrejaId;
-  late TextEditingController _nomeIgreja;
   late TextEditingController _sexo;
   late TextEditingController _telefone;
-  late TextEditingController _tipoUsuario;
-  late TextEditingController _ativo;
+
+  String? _selectedDistritoId;
+  String? _selectedDistritoNome;
+  String? _selectedIgrejaId;
+  String? _selectedIgrejaNome;
+
+  List<Map<String, dynamic>> _distritos = [];
+  List<Map<String, dynamic>> _igrejas = [];
 
   @override
   void initState() {
@@ -33,14 +37,41 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
       text:
           u != null ? u.dataNascimento.toIso8601String().split("T").first : '',
     );
-    _distrito = TextEditingController(text: u?.distrito);
-    _igrejaId = TextEditingController(text: u?.igrejaId);
-    _nomeIgreja = TextEditingController(text: u?.nomeIgreja);
     _sexo = TextEditingController(text: u?.sexo);
     _telefone = TextEditingController(text: u?.telefone.toString());
-    _tipoUsuario = TextEditingController(text: u?.tipoUsuario);
-    _ativo = TextEditingController(text: u?.ativo);
+
+    _fetchDistritos();
+    if (u != null) {
+      _selectedDistritoId = u.distrito;
+      _selectedIgrejaId = u.igrejaId;
+      _fetchIgrejas(u.distrito);
+    }
     super.initState();
+  }
+
+  Future<void> _fetchDistritos() async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('distritos').get();
+    setState(() {
+      _distritos =
+          snapshot.docs
+              .map((doc) => {'id': doc.id, 'nome': doc['nome']})
+              .toList();
+    });
+  }
+
+  Future<void> _fetchIgrejas(String distritoId) async {
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('igrejas')
+            .where('distritoId', isEqualTo: distritoId)
+            .get();
+    setState(() {
+      _igrejas =
+          snapshot.docs
+              .map((doc) => {'id': doc.id, 'nome': doc['nome']})
+              .toList();
+    });
   }
 
   void _submit() {
@@ -51,13 +82,13 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           nome: _nome.text,
           cpf: _cpf.text,
           dataNascimento: DateTime.parse(_dataNascimento.text),
-          distrito: _distrito.text,
-          igrejaId: _igrejaId.text,
-          nomeIgreja: _nomeIgreja.text,
+          distrito: _selectedDistritoId ?? '',
+          igrejaId: _selectedIgrejaId ?? '',
+          nomeIgreja: _selectedIgrejaNome ?? '',
           sexo: _sexo.text,
           telefone: int.parse(_telefone.text),
-          tipoUsuario: _tipoUsuario.text,
-          ativo: _ativo.text,
+          tipoUsuario: 'Professor', // Valor fixo
+          ativo: 'S', // Valor fixo
         ),
       );
     }
@@ -83,17 +114,42 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
               labelText: 'Data de Nascimento yyyy-MM-dd',
             ),
           ),
-          TextFormField(
-            controller: _distrito,
+          DropdownButtonFormField<String>(
+            value: _selectedDistritoId,
             decoration: InputDecoration(labelText: 'Distrito'),
+            items:
+                _distritos.map((distrito) {
+                  return DropdownMenuItem<String>(
+                    value: distrito['id'],
+                    child: Text(distrito['nome']),
+                  );
+                }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedDistritoId = value;
+                _selectedIgrejaId = null;
+                _selectedIgrejaNome = null;
+                _fetchIgrejas(value!);
+              });
+            },
           ),
-          TextFormField(
-            controller: _igrejaId,
-            decoration: InputDecoration(labelText: 'Igreja ID'),
-          ),
-          TextFormField(
-            controller: _nomeIgreja,
-            decoration: InputDecoration(labelText: 'Nome Igreja'),
+          DropdownButtonFormField<String>(
+            value: _selectedIgrejaId,
+            decoration: InputDecoration(labelText: 'Igreja'),
+            items:
+                _igrejas.map((igreja) {
+                  return DropdownMenuItem<String>(
+                    value: igreja['id'],
+                    child: Text(igreja['nome']),
+                  );
+                }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedIgrejaId = value;
+                _selectedIgrejaNome =
+                    _igrejas.firstWhere((i) => i['id'] == value)['nome'];
+              });
+            },
           ),
           TextFormField(
             controller: _sexo,
@@ -102,14 +158,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           TextFormField(
             controller: _telefone,
             decoration: InputDecoration(labelText: 'Telefone'),
-          ),
-          TextFormField(
-            controller: _tipoUsuario,
-            decoration: InputDecoration(labelText: 'Tipo Usuário'),
-          ),
-          TextFormField(
-            controller: _ativo,
-            decoration: InputDecoration(labelText: 'Ativo'),
           ),
           ElevatedButton(onPressed: _submit, child: Text('Salvar')),
         ],
