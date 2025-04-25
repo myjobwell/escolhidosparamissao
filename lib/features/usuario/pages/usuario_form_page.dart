@@ -8,10 +8,25 @@ class UsuarioFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFEFF2FB),
       appBar: AppBar(
-        title: const Text('Criar Conta'),
-        backgroundColor: const Color(0xFF0B1121),
+        backgroundColor: const Color(0xFFEFF2FB),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0B1121)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Criar conta',
+          style: TextStyle(
+            color: Color(0xFF0B1121),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: UsuarioFormWidget(

@@ -70,7 +70,24 @@ class _CampoCpfWidgetState extends State<CampoCpfWidget> {
     return TextFormField(
       controller: widget.controller,
       focusNode: _cpfFocus,
-      decoration: const InputDecoration(labelText: 'CPF'),
+      decoration: InputDecoration(
+        labelText: 'CPF',
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFFDADCE0)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFF0B1121), width: 1.5),
+        ),
+      ),
       inputFormatters: [cpfFormatter],
       keyboardType: TextInputType.number,
       onChanged: (_) {
