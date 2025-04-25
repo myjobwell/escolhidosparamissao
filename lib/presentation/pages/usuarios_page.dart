@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/usuario_model.dart';
 import '../../services/usuario_service.dart';
-import '../widgets/usuario_form_widget.dart';
+import '../../features/usuario/usuario_form_widget.dart';
 
 class UserCrudPage extends StatelessWidget {
   const UserCrudPage({super.key});
