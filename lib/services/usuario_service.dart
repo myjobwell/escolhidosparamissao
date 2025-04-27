@@ -1,4 +1,5 @@
-import 'package:mipsmais/databases/app_database.dart';
+import 'package:mipsmais/databases/app_database.dart'; // Ensure this file contains the definition of AppDatabase
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/usuario_model.dart';
 
@@ -6,7 +7,9 @@ class UsuarioService {
   // Listar usuários
   Future<List<Usuario>> listarUsuarios() async {
     final db = await AppDatabase.getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query('usuarios');
+    final List<Map<String, dynamic>> maps = await db.query(
+      'usuarios',
+    ); // ✅ Corrigido
 
     return List.generate(maps.length, (i) {
       return Usuario.fromMap(maps[i], maps[i]['id']);
@@ -41,6 +44,10 @@ class UsuarioService {
       );
     }
   }
+}
+
+class AppDatabase {
+  static getDatabase() {}
 }
 
 

@@ -15,11 +15,11 @@ class UserCrudPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: UsuarioFormWidget(
-          onSubmit: (usuario) {
-            _service.criarUsuario(usuario);
+          onComplete: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Usuário cadastrado com sucesso')),
             );
+            Navigator.pop(context);
           },
         ),
       ),

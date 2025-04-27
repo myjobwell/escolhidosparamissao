@@ -1,7 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
+//import 'package:mipsmais/core/firebase_usuario_service.dart';
+import 'package:mipsmais/databases/app_database.dart';
+import 'package:mipsmais/services/firebase_usuario_service.dart'
+    as core_firebase;
 import '../../models/usuario_model.dart';
+import '../../services/firebase_usuario_service.dart';
+//import '../../data/db_usuario.dart';
 import 'utils/validators.dart';
 import 'utils/masks.dart';
 import 'widgets/campo_cpf_widget.dart';
@@ -13,11 +19,26 @@ import 'widgets/campo_data_nascimento_widget.dart';
 import 'widgets/campo_sexo_widget.dart';
 import '../home/widgets/hover_button_widget.dart';
 
-class UsuarioFormWidget extends StatefulWidget {
-  final Function(Usuario usuario) onSubmit;
+/* class UsuarioFormWidget extends StatefulWidget {
+  final Function()? onComplete;
   final Usuario? usuario;
 
-  const UsuarioFormWidget({super.key, required this.onSubmit, this.usuario});
+  const UsuarioFormWidget({
+    super.key,
+    this.onComplete,
+    this.usuario,
+    required Null Function(dynamic usuario) onSubmit,
+  });
+
+  @override
+  State<UsuarioFormWidget> createState() => _UsuarioFormWidgetState();
+} */
+
+class UsuarioFormWidget extends StatefulWidget {
+  final Function()? onComplete;
+  final Usuario? usuario;
+
+  const UsuarioFormWidget({super.key, this.onComplete, this.usuario});
 
   @override
   State<UsuarioFormWidget> createState() => _UsuarioFormWidgetState();
@@ -130,33 +151,45 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
     });
   }
 
-  void _submit() {
+  Future<void> _cadastrarUsuario() async {
     setState(() => _formFoiEnviado = true);
+
     if (_formKey.currentState!.validate() && _isFormValido()) {
       final nascimentoIso = _converterDataParaIso(_dataNascimento.text);
 
-      widget.onSubmit(
-        Usuario(
-          id: widget.usuario?.id,
-          nome: _nome.text,
-          cpf: _cpf.text.replaceAll(RegExp(r'[^0-9]'), ''),
-          nascimento: nascimentoIso,
-          sexo: _sexo ?? '',
-          telefone: telefoneFormatter.getUnmaskedText(),
-          email: '',
-          tipoUsuario: 'Professor',
-          divisaoId: 1,
-          divisaoNome: 'Divisão Sul Americana (DSA)',
-          uniaoId: 1,
-          uniaoNome: 'União Noroeste Brasileira (UNoB)',
-          associacaoId: 1,
-          associacaoNome: 'Associação Norte Rondônia e Acre (ANRA)',
-          distritoId: int.tryParse(_selectedDistritoId ?? '') ?? 0,
-          distritoNome: _selectedDistritoNome ?? '',
-          igrejaId: _selectedIgrejaId ?? '',
-          igrejaNome: _selectedIgrejaNome ?? '',
-        ),
+      Usuario usuario = Usuario(
+        id: _cpf.text,
+        nome: _nome.text,
+        cpf: _cpf.text.replaceAll(RegExp(r'[^0-9]'), ''),
+        nascimento: nascimentoIso,
+        sexo: _sexo ?? '',
+        telefone: telefoneFormatter.getUnmaskedText(),
+        email: '',
+        tipoUsuario: 'Professor',
+        divisaoId: 1,
+        divisaoNome: 'Divisão Sul Americana (DSA)',
+        uniaoId: 1,
+        uniaoNome: 'União Noroeste Brasileira (UNoB)',
+        associacaoId: 1,
+        associacaoNome: 'Associação Norte Rondônia e Acre (ANRA)',
+        distritoId: int.tryParse(_selectedDistritoId ?? '') ?? 0,
+        distritoNome: _selectedDistritoNome ?? '',
+        igrejaId: _selectedIgrejaId ?? '',
+        igrejaNome: _selectedIgrejaNome ?? '',
+        sincronizado: false,
       );
+
+      await DbUsuario.salvarUsuario(usuario);
+      bool sucessoFirebase = await core_firebase
+          .FirebaseUsuarioService.salvarUsuario(usuario);
+
+      if (sucessoFirebase) {
+        await DbUsuario.atualizarSincronizacao(usuario.cpf);
+      }
+
+      if (widget.onComplete != null) {
+        widget.onComplete!();
+      }
     }
   }
 
@@ -175,7 +208,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      // ⬆️ Aqui ajustado para evitar overflow
       padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
       child: Form(
         key: _formKey,
@@ -254,7 +286,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
                 backgroundColor: const Color(0xFF0B1121),
                 hoverColor: const Color(0xFF1F2A3F),
                 textColor: Colors.white,
-                onPressed: _isFormValido() ? _submit : () {},
+                onPressed: _cadastrarUsuario,
               ),
             ),
           ],
