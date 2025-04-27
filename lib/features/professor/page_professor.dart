@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../core/global.dart';
 import '../../databases/app_database.dart';
-import '../../components/card_widget.dart'; // ✅ Import do novo CardWidget
-import '../../components/title_widget.dart'; // ✅ Import do novo TitleWidget
+import '../../components/card_widget.dart';
+import '../../components/title_widget.dart';
+import '../../components/lista_de_alunos.dart'; // ✅ Import do widget de lista de alunos
 
 class PageProfessor extends StatefulWidget {
   const PageProfessor({super.key});
@@ -44,7 +45,6 @@ class _PageProfessorState extends State<PageProfessor>
           nomeUsuario = usuario.nome ?? '';
           isLoading = false;
         });
-
         _controller.forward();
       } else {
         setState(() {
@@ -135,9 +135,7 @@ class _PageProfessorState extends State<PageProfessor>
                             backgroundColor: const Color(0xFFE6F0FA),
                             title: 'Ranking de Professores',
                             subtitle: 'Professores mais ativos',
-                            onTap: () {
-                              // Ação futura
-                            },
+                            onTap: () {},
                           ),
                           const SizedBox(height: 10),
                           CardWidget(
@@ -146,48 +144,38 @@ class _PageProfessorState extends State<PageProfessor>
                             backgroundColor: const Color(0xFFFDEEEF),
                             title: 'Meu Desempenho',
                             subtitle: 'Meus resultados',
-                            onTap: () {
-                              // Ação futura
-                            },
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // Temporariamente inativo
-                            },
-                            child: const Text(
-                              '+Adicionar Professor',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF0B1121),
-                              ),
-                            ),
+                            onTap: () {},
                           ),
                           const SizedBox(height: 20),
-                          const Text(
-                            'Alunos',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0B1121),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF0B1121),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 14,
+                              ),
                             ),
+                            icon: const Icon(
+                              Icons.person_add,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              'Adicionar Aluno',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onPressed: () {
+                              // Futuro: abrir cadastro de aluno
+                            },
                           ),
-                          const SizedBox(height: 15),
-                          TitleWidget(
-                            name: 'Lucas Silva',
-                            progress: '15 Estudos Bíblicos',
-                            bgColor: Colors.blue[100]!,
-                          ),
-                          TitleWidget(
-                            name: 'Mariana Costa',
-                            progress: '12 Estudos Bíblicos',
-                            bgColor: Colors.green[100]!,
-                          ),
-                          TitleWidget(
-                            name: 'Carlos Pereira',
-                            progress: '20 Estudos Bíblicos',
-                            bgColor: Colors.purple[100]!,
-                          ),
+                          const SizedBox(height: 20),
+                          const ListaDeAlunos(), // ✅ Aqui chamando o widget separado
                         ],
                       ),
                     ),
