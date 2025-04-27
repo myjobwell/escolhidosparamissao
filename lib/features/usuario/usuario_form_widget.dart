@@ -19,21 +19,6 @@ import 'widgets/campo_data_nascimento_widget.dart';
 import 'widgets/campo_sexo_widget.dart';
 import '../home/widgets/hover_button_widget.dart';
 
-/* class UsuarioFormWidget extends StatefulWidget {
-  final Function()? onComplete;
-  final Usuario? usuario;
-
-  const UsuarioFormWidget({
-    super.key,
-    this.onComplete,
-    this.usuario,
-    required Null Function(dynamic usuario) onSubmit,
-  });
-
-  @override
-  State<UsuarioFormWidget> createState() => _UsuarioFormWidgetState();
-} */
-
 class UsuarioFormWidget extends StatefulWidget {
   final Function()? onComplete;
   final Usuario? usuario;
