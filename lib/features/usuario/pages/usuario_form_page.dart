@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../usuario_form_widget.dart';
+import '../../professor/page_professor.dart'; // ✅ Import da PageProfessor
 
 class UsuarioFormPage extends StatelessWidget {
   const UsuarioFormPage({super.key});
@@ -32,7 +33,11 @@ class UsuarioFormPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Usuário criado com sucesso')),
             );
-            Navigator.pop(context);
+            // ✅ Ao invés de voltar, agora navega para PageProfessor
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const PageProfessor()),
+            );
           },
         ),
       ),
