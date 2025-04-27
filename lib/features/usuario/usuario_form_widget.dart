@@ -45,6 +45,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
   @override
   void initState() {
+    super.initState();
     final u = widget.usuario;
     _nome = TextEditingController(text: u?.nome);
     _cpf = TextEditingController(text: u?.cpf);
@@ -62,8 +63,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
       _selectedIgrejaId = u.igrejaId;
       _selectedIgrejaNome = u.igrejaNome;
     }
-
-    super.initState();
   }
 
   String _formatarDataNascimento(String nascimentoIso) {
@@ -99,9 +98,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
     setState(() {
       _distritos =
           data
-              .map(
-                (e) => {'id': e['idDISTRITO'].toString(), 'nome': e['NOME']},
-              ) // ✅ Corrigido
+              .map((e) => {'id': e['idDISTRITO'].toString(), 'nome': e['NOME']})
               .toList();
     });
   }
@@ -116,7 +113,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
               .map(
                 (e) => {
                   'id': e['idIGREJA'].toString(),
-                  'nome': e['NOME'], // ✅ Corrigido
+                  'nome': e['NOME'],
                   'distritoId': e['distritoId'].toString(),
                 },
               )
@@ -146,13 +143,13 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
           nascimento: nascimentoIso,
           sexo: _sexo ?? '',
           telefone: telefoneFormatter.getUnmaskedText(),
-          email: '', // Pode ser preenchido se houver campo
+          email: '',
           tipoUsuario: 'Professor',
-          divisaoId: 1, // Você pode carregar via JSON depois
+          divisaoId: 1,
           divisaoNome: 'Divisão Sul Americana (DSA)',
-          uniaoId: 1, // Igual
+          uniaoId: 1,
           uniaoNome: 'União Noroeste Brasileira (UNoB)',
-          associacaoId: 1, // Igual
+          associacaoId: 1,
           associacaoNome: 'Associação Norte Rondônia e Acre (ANRA)',
           distritoId: int.tryParse(_selectedDistritoId ?? '') ?? 0,
           distritoNome: _selectedDistritoNome ?? '',
@@ -177,82 +174,91 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          CampoTextoWidget(
-            controller: _nome,
-            label: 'Nome',
-            validator: (value) {
-              if (!_formFoiEnviado) return null;
-              if (value == null || value.isEmpty) return 'Informe o nome';
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          CampoCpfWidget(
-            controller: _cpf,
-            onCpfCheck:
-                (duplicado) => setState(() => _cpfDuplicado = duplicado),
-          ),
-          const SizedBox(height: 16),
-          CampoDataNascimentoWidget(
-            controller: _dataNascimento,
-            showErrors: _formFoiEnviado,
-          ),
-          const SizedBox(height: 16),
-          CampoTelefoneWidget(
-            controller: _telefone,
-            showErrors: _formFoiEnviado,
-          ),
-          CampoSexoWidget(
-            selectedSexo: _sexo,
-            onChanged: (value) => setState(() => _sexo = value),
-            showErrors: _formFoiEnviado,
-          ),
-          const SizedBox(height: 16),
-          DropdownDistritoWidget(
-            selectedId: _selectedDistritoId,
-            distritos: _distritos,
-            onChanged: (value) {
-              final nome =
-                  _distritos.firstWhere((d) => d['id'] == value)['nome'];
-              setState(() {
-                _selectedDistritoId = value;
-                _selectedDistritoNome = nome;
-                _selectedIgrejaId = null;
-                _selectedIgrejaNome = null;
-              });
-              if (value != null) {
-                _filtrarIgrejasPorDistrito(value);
-              }
-            },
-            showErrors: _formFoiEnviado,
-          ),
-          const SizedBox(height: 16),
-          DropdownIgrejaWidget(
-            selectedId: _selectedIgrejaId,
-            igrejas: _igrejasFiltradas,
-            onChanged: (value) {
-              final nome =
-                  _igrejasFiltradas.firstWhere((i) => i['id'] == value)['nome'];
-              setState(() {
-                _selectedIgrejaId = value;
-                _selectedIgrejaNome = nome;
-              });
-            },
-            showErrors: _formFoiEnviado,
-          ),
-          const SizedBox(height: 20),
-          HoverButtonWidget(
-            label: 'Cadastrar',
-            backgroundColor: const Color(0xFF0B1121),
-            hoverColor: const Color(0xFF1F2A3F),
-            textColor: Colors.white,
-            onPressed: _isFormValido() ? _submit : () {},
-          ),
-        ],
+    return SingleChildScrollView(
+      // ⬆️ Aqui ajustado para evitar overflow
+      padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CampoTextoWidget(
+              controller: _nome,
+              label: 'Nome',
+              validator: (value) {
+                if (!_formFoiEnviado) return null;
+                if (value == null || value.isEmpty) return 'Informe o nome';
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            CampoCpfWidget(
+              controller: _cpf,
+              onCpfCheck:
+                  (duplicado) => setState(() => _cpfDuplicado = duplicado),
+            ),
+            const SizedBox(height: 16),
+            CampoDataNascimentoWidget(
+              controller: _dataNascimento,
+              showErrors: _formFoiEnviado,
+            ),
+            const SizedBox(height: 16),
+            CampoTelefoneWidget(
+              controller: _telefone,
+              showErrors: _formFoiEnviado,
+            ),
+            CampoSexoWidget(
+              selectedSexo: _sexo,
+              onChanged: (value) => setState(() => _sexo = value),
+              showErrors: _formFoiEnviado,
+            ),
+            const SizedBox(height: 16),
+            DropdownDistritoWidget(
+              selectedId: _selectedDistritoId,
+              distritos: _distritos,
+              onChanged: (value) {
+                final nome =
+                    _distritos.firstWhere((d) => d['id'] == value)['nome'];
+                setState(() {
+                  _selectedDistritoId = value;
+                  _selectedDistritoNome = nome;
+                  _selectedIgrejaId = null;
+                  _selectedIgrejaNome = null;
+                });
+                if (value != null) {
+                  _filtrarIgrejasPorDistrito(value);
+                }
+              },
+              showErrors: _formFoiEnviado,
+            ),
+            const SizedBox(height: 16),
+            DropdownIgrejaWidget(
+              selectedId: _selectedIgrejaId,
+              igrejas: _igrejasFiltradas,
+              onChanged: (value) {
+                final nome =
+                    _igrejasFiltradas.firstWhere(
+                      (i) => i['id'] == value,
+                    )['nome'];
+                setState(() {
+                  _selectedIgrejaId = value;
+                  _selectedIgrejaNome = nome;
+                });
+              },
+              showErrors: _formFoiEnviado,
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: HoverButtonWidget(
+                label: 'Cadastrar',
+                backgroundColor: const Color(0xFF0B1121),
+                hoverColor: const Color(0xFF1F2A3F),
+                textColor: Colors.white,
+                onPressed: _isFormValido() ? _submit : () {},
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
