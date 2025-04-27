@@ -1,4 +1,91 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+class Usuario {
+  final String? id;
+  final String nome;
+  final String cpf;
+  final String sexo;
+  final String telefone;
+  final String email;
+  final String nascimento; // formato yyyy-MM-dd ou ISO 8601
+  final String tipoUsuario;
+  final int divisaoId;
+  final String divisaoNome;
+  final int uniaoId;
+  final String uniaoNome;
+  final int associacaoId;
+  final String associacaoNome;
+  final int distritoId;
+  final String distritoNome;
+  final String igrejaId;
+  final String igrejaNome;
+
+  Usuario({
+    this.id,
+    required this.nome,
+    required this.cpf,
+    required this.sexo,
+    required this.telefone,
+    required this.email,
+    required this.nascimento,
+    required this.tipoUsuario,
+    required this.divisaoId,
+    required this.divisaoNome,
+    required this.uniaoId,
+    required this.uniaoNome,
+    required this.associacaoId,
+    required this.associacaoNome,
+    required this.distritoId,
+    required this.distritoNome,
+    required this.igrejaId,
+    required this.igrejaNome,
+  });
+
+  factory Usuario.fromMap(Map<String, dynamic> data, String? documentId) {
+    return Usuario(
+      id: documentId,
+      nome: data['nome'],
+      cpf: data['cpf'],
+      sexo: data['sexo'],
+      telefone: data['telefone'],
+      email: data['email'],
+      nascimento: data['nascimento'],
+      tipoUsuario: data['tipo_usuario'],
+      divisaoId: data['divisaoId'],
+      divisaoNome: data['divisaoNome'],
+      uniaoId: data['uniaoId'],
+      uniaoNome: data['uniaoNome'],
+      associacaoId: data['associacaoId'],
+      associacaoNome: data['associacaoNome'],
+      distritoId: data['distritoId'],
+      distritoNome: data['distritoNome'],
+      igrejaId: data['igrejaId'],
+      igrejaNome: data['igrejaNome'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'nome': nome,
+      'cpf': cpf,
+      'sexo': sexo,
+      'telefone': telefone,
+      'email': email,
+      'nascimento': nascimento,
+      'tipo_usuario': tipoUsuario,
+      'divisaoId': divisaoId,
+      'divisaoNome': divisaoNome,
+      'uniaoId': uniaoId,
+      'uniaoNome': uniaoNome,
+      'associacaoId': associacaoId,
+      'associacaoNome': associacaoNome,
+      'distritoId': distritoId,
+      'distritoNome': distritoNome,
+      'igrejaId': igrejaId,
+      'igrejaNome': igrejaNome,
+    };
+  }
+}
+
+/* import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Usuario {
   final String? id;
@@ -58,3 +145,4 @@ class Usuario {
     };
   }
 }
+ */

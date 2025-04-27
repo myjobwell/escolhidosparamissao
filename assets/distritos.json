@@ -1,0 +1,92 @@
+[
+  {
+    "idDISTRITO": 1,
+    "NOME": "Não Informado",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 2,
+    "NOME": "Santa Inês",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 3,
+    "NOME": "Rodrigues Alves",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 4,
+    "NOME": "Cruzeiro do Sul",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 5,
+    "NOME": "Sena Madureira",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 6,
+    "NOME": "Acrelândia",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 7,
+    "NOME": "Tarauacá",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 8,
+    "NOME": "Floresta - Acre",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 9,
+    "NOME": "Vila Parque",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 10,
+    "NOME": "Brasiléia",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 11,
+    "NOME": "Senador Guiomard",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 12,
+    "NOME": "João Alves",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 13,
+    "NOME": "Boca do Acre",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 14,
+    "NOME": "Feijó",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 15,
+    "NOME": "Bosque",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 16,
+    "NOME": "Conquista",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 17,
+    "NOME": "Central Rio Branco - Acre",
+    "associacaoId": 1
+  },
+  {
+    "idDISTRITO": 18,
+    "NOME": "Estação Experimental",
+    "associacaoId": 1
+  }
+]

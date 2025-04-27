@@ -17,7 +17,7 @@ class CampoSexoWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Sexo'),
+        //const Text('Sexo'),
         Row(
           children: [
             Expanded(

@@ -16,9 +16,26 @@ class CampoDataNascimentoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      decoration: const InputDecoration(labelText: 'Data de Nascimento'),
       keyboardType: TextInputType.datetime,
       inputFormatters: [dataNascimentoFormatter],
+      decoration: InputDecoration(
+        labelText: 'Data de Nascimento',
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFFDADCE0)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFF0B1121), width: 1.5),
+        ),
+      ),
       validator: (value) {
         if (!showErrors) return null;
         if (value == null || value.isEmpty)

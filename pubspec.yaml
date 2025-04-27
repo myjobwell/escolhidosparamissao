@@ -39,6 +39,10 @@ dependencies:
   cloud_firestore: ^5.6.6
   shared_preferences: ^2.2.2
   mask_text_input_formatter: ^2.5.0
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  uuid: ^4.0.0
+
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +65,13 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/divisoes.json
+    - assets/unioes.json
+    - assets/associacoes.json
+    - assets/distritos.json
+    - assets/igrejas.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,0 +1,832 @@
+[
+  {
+    "idIGREJA": 5,
+    "NOME": "Não Informado",
+    "distritoId": 1
+  },
+  {
+    "idIGREJA": 6,
+    "NOME": "06 de Agosto",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 7,
+    "NOME": "13 de Maio",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 8,
+    "NOME": "25 de Agosto",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 9,
+    "NOME": "2º Distrito",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 10,
+    "NOME": "Acrelândia",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 11,
+    "NOME": "Adalberto Aragão",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 12,
+    "NOME": "Água Viva - Tarauacá",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 13,
+    "NOME": "Airton Sena - Floresta - Ac",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 14,
+    "NOME": "Alagoas",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 15,
+    "NOME": "Albert Sampaio - Santa Inês",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 16,
+    "NOME": "Alberto de Castro",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 17,
+    "NOME": "Alcoobrás",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 18,
+    "NOME": "Assis Brasil I - Central",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 19,
+    "NOME": "Bahia",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 20,
+    "NOME": "Bairro Formoso",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 21,
+    "NOME": "Bairro Novo",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 22,
+    "NOME": "Bairro Novo/Boca do Acre",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 23,
+    "NOME": "Bairro Novo/vista Alegre do Abunã",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 24,
+    "NOME": "Bairro São Paulo",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 25,
+    "NOME": "Baixa Verde",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 26,
+    "NOME": "Batoque",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 27,
+    "NOME": "Beija-flor",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 28,
+    "NOME": "Bela Vista - Ac",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 29,
+    "NOME": "Belo Jardim I",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 30,
+    "NOME": "Belo Jardim II",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 31,
+    "NOME": "Boca do Acre",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 32,
+    "NOME": "Bom Futuro - Feijó",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 33,
+    "NOME": "Bosque",
+    "distritoId": 15
+  },
+  {
+    "idIGREJA": 34,
+    "NOME": "Brasiléia",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 35,
+    "NOME": "Bujari",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 36,
+    "NOME": "Cachoeira",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 37,
+    "NOME": "Cadeia Velha",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 38,
+    "NOME": "Cajueiro II",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 39,
+    "NOME": "Caladinho",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 40,
+    "NOME": "Camicuã",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 41,
+    "NOME": "Campos Elizios/Rod. Alves",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 42,
+    "NOME": "Canaã - Triângulo Ac",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 43,
+    "NOME": "Capixaba",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 44,
+    "NOME": "Caquetá",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 45,
+    "NOME": "Central de Feijó",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 46,
+    "NOME": "Central Floresta - AC",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 47,
+    "NOME": "Central Rio Branco",
+    "distritoId": 17
+  },
+  {
+    "idIGREJA": 48,
+    "NOME": "Central Senador Guiomard",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 49,
+    "NOME": "Cesário",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 50,
+    "NOME": "Chico Paulo",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 51,
+    "NOME": "Cidade do Povo",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 52,
+    "NOME": "Cinturão Verde",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 53,
+    "NOME": "Cobal",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 54,
+    "NOME": "Cohab - Sen. Guiomard",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 55,
+    "NOME": "Colônia São Francisco",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 56,
+    "NOME": "Comunidade Pirã de Rã",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 57,
+    "NOME": "Comunidade Poeira",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 58,
+    "NOME": "Conjunto Esperança",
+    "distritoId": 17
+  },
+  {
+    "idIGREJA": 59,
+    "NOME": "Conjunto Universitário III",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 60,
+    "NOME": "Conquista - Estação Experimental",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 61,
+    "NOME": "Conquista - Feijó",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 62,
+    "NOME": "Corcovado",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 63,
+    "NOME": "Cristo Libertador",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 64,
+    "NOME": "Croa",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 65,
+    "NOME": "Curuquetê",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 66,
+    "NOME": "da Praia",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 67,
+    "NOME": "Democracia",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 68,
+    "NOME": "Ebenézer",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 69,
+    "NOME": "Epitaciolândia",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 70,
+    "NOME": "Esperança - Tarauacá",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 71,
+    "NOME": "Esperança de Feijó",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 72,
+    "NOME": "Estaca Zero",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 73,
+    "NOME": "Estação Experimental",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 74,
+    "NOME": "Estrela da Manhã - Km. 52",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 75,
+    "NOME": "Eternidade",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 76,
+    "NOME": "Eugênio - Areal - Sena Madureira",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 77,
+    "NOME": "Extrema",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 78,
+    "NOME": "Floresta do Purus",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 79,
+    "NOME": "Foz do Paraná",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 80,
+    "NOME": "Gama",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 81,
+    "NOME": "Granada",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 82,
+    "NOME": "g do Cacau",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 83,
+    "NOME": "Guajará - Cruz. Sul",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 84,
+    "NOME": "Guajará II",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 85,
+    "NOME": "i do v\"\"",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 86,
+    "NOME": "Incra",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 87,
+    "NOME": "Ipixuna",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 88,
+    "NOME": "João Alves",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 89,
+    "NOME": "João Eduardo",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 90,
+    "NOME": "Jordão",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 91,
+    "NOME": "Jorge Lavocart",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 92,
+    "NOME": "José Hassen",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 93,
+    "NOME": "Km 35",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 94,
+    "NOME": "Km 46 - Feijó",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 95,
+    "NOME": "Mamoré",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 96,
+    "NOME": "Mâncio Lima",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 97,
+    "NOME": "Manoel Urbano",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 98,
+    "NOME": "Marechal Thaumaturgo",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 99,
+    "NOME": "Miritizal",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 100,
+    "NOME": "Mocinha Magalhães",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 101,
+    "NOME": "Morada Nova",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 102,
+    "NOME": "Naire Leite",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 103,
+    "NOME": "Nazaré - Tarauacá",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 104,
+    "NOME": "Nova Califórnia",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 105,
+    "NOME": "Nova Cintra - Rodrigues Alves",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 106,
+    "NOME": "Nova Esperança - Ac",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 107,
+    "NOME": "Nova Estação",
+    "distritoId": 17
+  },
+  {
+    "idIGREJA": 108,
+    "NOME": "Nova Floresta - AC",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 109,
+    "NOME": "Nova Vista - Santa Rosa do Purus",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 110,
+    "NOME": "Novo Horizonte - AC",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 111,
+    "NOME": "Ouro Preto",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 112,
+    "NOME": "Panorama",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 113,
+    "NOME": "Paraiso - Floresta -ac",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 114,
+    "NOME": "Pauini - Boca do Acre",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 115,
+    "NOME": "Paz",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 116,
+    "NOME": "Pioneiros",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 117,
+    "NOME": "Plácido de Castro",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 118,
+    "NOME": "Polo",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 119,
+    "NOME": "Portal da Amazônia",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 120,
+    "NOME": "Portelinha",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 121,
+    "NOME": "Portelinha/Boca do Acre",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 122,
+    "NOME": "Porto Walter",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 123,
+    "NOME": "Presidente Juscelino",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 124,
+    "NOME": "Primavera-a",
+    "distritoId": 18
+  },
+  {
+    "idIGREJA": 125,
+    "NOME": "Projeto Taquari",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 126,
+    "NOME": "Promissão",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 127,
+    "NOME": "Raimundo Melo",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 128,
+    "NOME": "Ramal 05",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 129,
+    "NOME": "Ramal Chilude",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 130,
+    "NOME": "Ramal do Incra",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 131,
+    "NOME": "Ramal Porto Acre",
+    "distritoId": 13
+  },
+  {
+    "idIGREJA": 132,
+    "NOME": "Recanto dos Buritis",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 133,
+    "NOME": "Rio Grande do Sul",
+    "distritoId": 17
+  },
+  {
+    "idIGREJA": 134,
+    "NOME": "Rodrigues Alves",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 135,
+    "NOME": "Rosa Linda",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 136,
+    "NOME": "Saboeiro",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 137,
+    "NOME": "Samauma",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 138,
+    "NOME": "Santa Cecília",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 139,
+    "NOME": "Santa Helena",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 140,
+    "NOME": "Santa Inês",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 141,
+    "NOME": "Santa Luzia",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 142,
+    "NOME": "Santa Rosa do Purus",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 143,
+    "NOME": "Santo Antônio",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 144,
+    "NOME": "São Francisco - AC",
+    "distritoId": 15
+  },
+  {
+    "idIGREJA": 145,
+    "NOME": "São Francisco - Rod. Alves",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 146,
+    "NOME": "São José - Cz. do Sul",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 147,
+    "NOME": "São Luiz",
+    "distritoId": 11
+  },
+  {
+    "idIGREJA": 148,
+    "NOME": "São Luiz - Extrema",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 149,
+    "NOME": "São Pedro",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 150,
+    "NOME": "Segundo Distrito",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 151,
+    "NOME": "Sena Madureira",
+    "distritoId": 5
+  },
+  {
+    "idIGREJA": 152,
+    "NOME": "Serraria",
+    "distritoId": 3
+  },
+  {
+    "idIGREJA": 153,
+    "NOME": "Sobral",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 154,
+    "NOME": "Tancredo Neves - AC",
+    "distritoId": 16
+  },
+  {
+    "idIGREJA": 155,
+    "NOME": "Taquari",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 156,
+    "NOME": "Tarauacá",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 157,
+    "NOME": "Terra Alta",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 158,
+    "NOME": "Triângulo - Ac",
+    "distritoId": 2
+  },
+  {
+    "idIGREJA": 159,
+    "NOME": "Triângulo - Tarauacá",
+    "distritoId": 7
+  },
+  {
+    "idIGREJA": 160,
+    "NOME": "Variante",
+    "distritoId": 12
+  },
+  {
+    "idIGREJA": 161,
+    "NOME": "Verdiano",
+    "distritoId": 14
+  },
+  {
+    "idIGREJA": 162,
+    "NOME": "Vila Assis Brasil",
+    "distritoId": 4
+  },
+  {
+    "idIGREJA": 163,
+    "NOME": "Vila Campinas",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 164,
+    "NOME": "Vila Jerusalém",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 165,
+    "NOME": "Vila Manoel Marques",
+    "distritoId": 8
+  },
+  {
+    "idIGREJA": 166,
+    "NOME": "Vila Parque",
+    "distritoId": 9
+  },
+  {
+    "idIGREJA": 167,
+    "NOME": "Vista Alegre do Abunã",
+    "distritoId": 6
+  },
+  {
+    "idIGREJA": 168,
+    "NOME": "Vitória",
+    "distritoId": 15
+  },
+  {
+    "idIGREJA": 169,
+    "NOME": "Xapuri",
+    "distritoId": 10
+  },
+  {
+    "idIGREJA": 170,
+    "NOME": "Zenaide Paiva",
+    "distritoId": 14
+  }
+]

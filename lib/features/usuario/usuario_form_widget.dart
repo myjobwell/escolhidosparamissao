@@ -1,16 +1,17 @@
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/usuario_model.dart';
 import 'utils/validators.dart';
 import 'utils/masks.dart';
 import 'widgets/campo_cpf_widget.dart';
 import 'widgets/campo_telefone_widget.dart';
-import 'widgets/campo_texto_widget.dart'; // Added import for CampoTextoWidget
+import 'widgets/campo_texto_widget.dart';
 import 'widgets/dropdown_distrito_widget.dart';
 import 'widgets/dropdown_igreja_widget.dart';
 import 'widgets/campo_data_nascimento_widget.dart';
 import 'widgets/campo_sexo_widget.dart';
-import '../home/widgets/hover_button_widget.dart'; // ✅ botão estilizado
+import '../home/widgets/hover_button_widget.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
   final Function(Usuario usuario) onSubmit;
@@ -37,6 +38,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
   List<Map<String, dynamic>> _distritos = [];
   List<Map<String, dynamic>> _igrejas = [];
+  List<Map<String, dynamic>> _igrejasFiltradas = [];
 
   bool _cpfDuplicado = false;
   bool _formFoiEnviado = false;
@@ -47,47 +49,86 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
     _nome = TextEditingController(text: u?.nome);
     _cpf = TextEditingController(text: u?.cpf);
     _dataNascimento = TextEditingController(
-      text:
-          u != null
-              ? "${u.dataNascimento.day.toString().padLeft(2, '0')}/"
-                  "${u.dataNascimento.month.toString().padLeft(2, '0')}/"
-                  "${u.dataNascimento.year}"
-              : '',
+      text: u != null ? _formatarDataNascimento(u.nascimento) : '',
     );
     _telefone = TextEditingController(text: u?.telefone.toString());
     _sexo = u?.sexo;
 
-    _fetchDistritos();
+    _loadDistritos();
+    _loadIgrejas();
+
     if (u != null) {
-      _selectedDistritoNome = u.distrito;
+      _selectedDistritoNome = u.distritoNome;
       _selectedIgrejaId = u.igrejaId;
-      _selectedIgrejaNome = u.nomeIgreja;
-      _selectedDistritoId = null; // prevenimos quebra de seleção
+      _selectedIgrejaNome = u.igrejaNome;
     }
+
     super.initState();
   }
 
-  Future<void> _fetchDistritos() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('distritos').get();
+  String _formatarDataNascimento(String nascimentoIso) {
+    try {
+      final nascimento = DateTime.parse(nascimentoIso);
+      return "${nascimento.day.toString().padLeft(2, '0')}/"
+          "${nascimento.month.toString().padLeft(2, '0')}/"
+          "${nascimento.year}";
+    } catch (e) {
+      return '';
+    }
+  }
+
+  String _converterDataParaIso(String dataBr) {
+    try {
+      final partes = dataBr.split('/');
+      final dia = int.parse(partes[0]);
+      final mes = int.parse(partes[1]);
+      final ano = int.parse(partes[2]);
+      final data = DateTime(ano, mes, dia);
+      return data.toIso8601String();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Future<void> _loadDistritos() async {
+    final String response = await rootBundle.loadString(
+      'assets/distritos.json',
+    );
+    final List<dynamic> data = jsonDecode(response);
+
     setState(() {
       _distritos =
-          snapshot.docs
-              .map((doc) => {'id': doc.id, 'nome': doc['nome']})
+          data
+              .map(
+                (e) => {'id': e['idDISTRITO'].toString(), 'nome': e['NOME']},
+              ) // ✅ Corrigido
               .toList();
     });
   }
 
-  Future<void> _fetchIgrejas(String distritoId) async {
-    final snapshot =
-        await FirebaseFirestore.instance
-            .collection('igrejas')
-            .where('distritoId', isEqualTo: distritoId)
-            .get();
+  Future<void> _loadIgrejas() async {
+    final String response = await rootBundle.loadString('assets/igrejas.json');
+    final List<dynamic> data = jsonDecode(response);
+
     setState(() {
       _igrejas =
-          snapshot.docs
-              .map((doc) => {'id': doc.id, 'nome': doc['nome']})
+          data
+              .map(
+                (e) => {
+                  'id': e['idIGREJA'].toString(),
+                  'nome': e['NOME'], // ✅ Corrigido
+                  'distritoId': e['distritoId'].toString(),
+                },
+              )
+              .toList();
+    });
+  }
+
+  void _filtrarIgrejasPorDistrito(String distritoId) {
+    setState(() {
+      _igrejasFiltradas =
+          _igrejas
+              .where((igreja) => igreja['distritoId'] == distritoId)
               .toList();
     });
   }
@@ -95,26 +136,28 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   void _submit() {
     setState(() => _formFoiEnviado = true);
     if (_formKey.currentState!.validate() && _isFormValido()) {
-      final partesData = _dataNascimento.text.split('/');
-      final dataNascimento = DateTime(
-        int.parse(partesData[2]),
-        int.parse(partesData[1]),
-        int.parse(partesData[0]),
-      );
+      final nascimentoIso = _converterDataParaIso(_dataNascimento.text);
 
       widget.onSubmit(
         Usuario(
           id: widget.usuario?.id,
           nome: _nome.text,
           cpf: _cpf.text.replaceAll(RegExp(r'[^0-9]'), ''),
-          dataNascimento: dataNascimento,
-          distrito: _selectedDistritoNome ?? '',
-          igrejaId: _selectedIgrejaId ?? '',
-          nomeIgreja: _selectedIgrejaNome ?? '',
+          nascimento: nascimentoIso,
           sexo: _sexo ?? '',
-          telefone: int.parse(telefoneFormatter.getUnmaskedText()),
+          telefone: telefoneFormatter.getUnmaskedText(),
+          email: '', // Pode ser preenchido se houver campo
           tipoUsuario: 'Professor',
-          ativo: 'S',
+          divisaoId: 1, // Você pode carregar via JSON depois
+          divisaoNome: 'Divisão Sul Americana (DSA)',
+          uniaoId: 1, // Igual
+          uniaoNome: 'União Noroeste Brasileira (UNoB)',
+          associacaoId: 1, // Igual
+          associacaoNome: 'Associação Norte Rondônia e Acre (ANRA)',
+          distritoId: int.tryParse(_selectedDistritoId ?? '') ?? 0,
+          distritoNome: _selectedDistritoNome ?? '',
+          igrejaId: _selectedIgrejaId ?? '',
+          igrejaNome: _selectedIgrejaNome ?? '',
         ),
       );
     }
@@ -147,16 +190,18 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
               return null;
             },
           ),
-
+          const SizedBox(height: 16),
           CampoCpfWidget(
             controller: _cpf,
             onCpfCheck:
                 (duplicado) => setState(() => _cpfDuplicado = duplicado),
           ),
+          const SizedBox(height: 16),
           CampoDataNascimentoWidget(
             controller: _dataNascimento,
             showErrors: _formFoiEnviado,
           ),
+          const SizedBox(height: 16),
           CampoTelefoneWidget(
             controller: _telefone,
             showErrors: _formFoiEnviado,
@@ -166,6 +211,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
             onChanged: (value) => setState(() => _sexo = value),
             showErrors: _formFoiEnviado,
           ),
+          const SizedBox(height: 16),
           DropdownDistritoWidget(
             selectedId: _selectedDistritoId,
             distritos: _distritos,
@@ -177,16 +223,20 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
                 _selectedDistritoNome = nome;
                 _selectedIgrejaId = null;
                 _selectedIgrejaNome = null;
-                _fetchIgrejas(value!);
               });
+              if (value != null) {
+                _filtrarIgrejasPorDistrito(value);
+              }
             },
             showErrors: _formFoiEnviado,
           ),
+          const SizedBox(height: 16),
           DropdownIgrejaWidget(
             selectedId: _selectedIgrejaId,
-            igrejas: _igrejas,
+            igrejas: _igrejasFiltradas,
             onChanged: (value) {
-              final nome = _igrejas.firstWhere((i) => i['id'] == value)['nome'];
+              final nome =
+                  _igrejasFiltradas.firstWhere((i) => i['id'] == value)['nome'];
               setState(() {
                 _selectedIgrejaId = value;
                 _selectedIgrejaNome = nome;

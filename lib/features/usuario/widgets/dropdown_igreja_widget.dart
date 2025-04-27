@@ -18,16 +18,53 @@ class DropdownIgrejaWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       value: selectedId,
-      decoration: const InputDecoration(labelText: 'Igreja'),
+      dropdownColor: Colors.white,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Color(0xFF0B1121), // estilo do item selecionado
+      ),
+      decoration: InputDecoration(
+        labelText: 'Igreja',
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFFDADCE0)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Color(0xFF0B1121), width: 1.5),
+        ),
+      ),
       items:
-          igrejas
-              .map(
-                (i) => DropdownMenuItem(
-                  value: i['id'] as String,
-                  child: Text(i['nome'] as String),
+          igrejas.map((i) {
+            return DropdownMenuItem<String>(
+              value: i['id'],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  i['nome'],
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF0B1121),
+                  ),
                 ),
-              )
-              .toList(),
+              ),
+            );
+          }).toList(),
+      selectedItemBuilder: (context) {
+        return igrejas.map((i) {
+          return Text(
+            i['nome'],
+            style: const TextStyle(fontSize: 16, color: Color(0xFF0B1121)),
+          );
+        }).toList();
+      },
       onChanged: onChanged,
       validator: (value) {
         if (!showErrors) return null;
