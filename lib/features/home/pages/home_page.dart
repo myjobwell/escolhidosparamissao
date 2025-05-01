@@ -7,6 +7,7 @@ import '../../professor/page_professor.dart'; // Corrigido caminho
 import '../../../core/global.dart'; // Variável global do CPF
 import '../../../databases/app_database.dart'; // Banco de dados local
 import '../../../models/usuario_model.dart'; // Modelo do usuário
+import '../../../databases/db_usuario.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -145,13 +146,28 @@ class HomePage extends StatelessWidget {
                             }
 
                             cpfLogado = cpfLimpo;
-
+                            // Buscar nome do usuário e salvar na variável global
+                            final usuario = await DbUsuario.buscarUsuarioPorCpf(
+                              cpfLogado!,
+                            );
+                            if (usuario != null) {
+                              nomeUsuarioGlobal = usuario.nome;
+                            }
+                            // Agora sim, navegar
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const PageProfessor(),
                               ),
                             );
+                            /*
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const PageProfessor(),
+                              ),
+                            );
+                          */
                           },
                         ),
                         const SizedBox(height: 15),
