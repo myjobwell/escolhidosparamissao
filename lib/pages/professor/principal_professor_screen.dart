@@ -102,7 +102,7 @@ class _PageProfessorState extends State<PageProfessor> {
                 );
               },
             ),
-            const SizedBox(height: 20),
+            /* const SizedBox(height: 20),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0B1121),
@@ -128,7 +128,7 @@ class _PageProfessorState extends State<PageProfessor> {
               },
             ),
             const SizedBox(height: 20),
-            const ListaDeAlunos(),
+            const ListaDeAlunos(), */
           ],
         ),
       ),

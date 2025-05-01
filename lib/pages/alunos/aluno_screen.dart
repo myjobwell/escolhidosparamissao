@@ -54,7 +54,7 @@ class AlunosPage extends StatelessWidget {
     ];
 
     return BasePage(
-      titulo: 'Ranking',
+      titulo: 'Meus Alunos',
       isLoading: false,
       exibirBotaoVoltar: true,
       centralizarTitulo: true,
