@@ -1,11 +1,11 @@
 class Usuario {
-  final String? id;
+  final String id;
   final String nome;
   final String cpf;
   final String sexo;
   final String telefone;
   final String email;
-  final String nascimento; // formato yyyy-MM-dd ou ISO 8601
+  final String nascimento;
   final String tipoUsuario;
   final int divisaoId;
   final String divisaoNome;
@@ -17,10 +17,11 @@ class Usuario {
   final String distritoNome;
   final String igrejaId;
   final String igrejaNome;
-  final bool sincronizado; // ✅ Adicionado campo para controle de sincronização
+  final bool sincronizado;
+  final String? idProfessor;
 
   Usuario({
-    this.id,
+    required this.id,
     required this.nome,
     required this.cpf,
     required this.sexo,
@@ -38,11 +39,11 @@ class Usuario {
     required this.distritoNome,
     required this.igrejaId,
     required this.igrejaNome,
-    required this.sincronizado, // novo campo obrigatório
+    required this.sincronizado,
+    this.idProfessor,
   });
 
-  // Função para criar um Usuario a partir de um Map (ex: dados vindos do SQLite ou Firebase)
-  factory Usuario.fromMap(Map<String, dynamic> data, String? documentId) {
+  factory Usuario.fromMap(Map<String, dynamic> data, String documentId) {
     return Usuario(
       id: documentId,
       nome: data['nome']?.toString() ?? '',
@@ -63,12 +64,13 @@ class Usuario {
       igrejaId: data['igrejaId']?.toString() ?? '',
       igrejaNome: data['igrejaNome']?.toString() ?? '',
       sincronizado: (data['sincronizado'] == 1 || data['sincronizado'] == true),
+      idProfessor: data['id_professor']?.toString(),
     );
   }
 
-  // Função para converter o Usuario em Map (para salvar no SQLite ou Firebase)
   Map<String, dynamic> toMap() {
     return {
+      'id': id, // <-- este campo estava faltando
       'nome': nome,
       'cpf': cpf,
       'sexo': sexo,
@@ -86,7 +88,8 @@ class Usuario {
       'distritoNome': distritoNome,
       'igrejaId': igrejaId,
       'igrejaNome': igrejaNome,
-      'sincronizado': sincronizado ? 1 : 0, // salva como inteiro no SQLite
+      'sincronizado': sincronizado ? 1 : 0,
+      'id_professor': idProfessor,
     };
   }
 }

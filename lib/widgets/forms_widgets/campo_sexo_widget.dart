@@ -17,12 +17,19 @@ class CampoSexoWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //const Text('Sexo'),
         Row(
           children: [
             Expanded(
               child: RadioListTile<String>(
-                title: const Text('Masculino'),
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.man, color: Colors.blue),
+                    SizedBox(width: 6),
+                    Flexible(child: Text('Masc.')),
+                  ],
+                ),
                 value: 'Masculino',
                 groupValue: selectedSexo,
                 onChanged: onChanged,
@@ -30,7 +37,15 @@ class CampoSexoWidget extends StatelessWidget {
             ),
             Expanded(
               child: RadioListTile<String>(
-                title: const Text('Feminino'),
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.woman, color: Colors.pink),
+                    SizedBox(width: 6),
+                    Flexible(child: Text('Fem')),
+                  ],
+                ),
                 value: 'Feminino',
                 groupValue: selectedSexo,
                 onChanged: onChanged,

@@ -4,37 +4,6 @@ import 'package:path/path.dart';
 class AppDatabase {
   static Database? _database;
 
-  /*
-  static Future<Database> getDatabase() async {
-    if (_database != null) return _database!;
-
-    final path = join(await getDatabasesPath(), 'mipsmais.db');
-
-    // ⚠️ Apenas durante o desenvolvimento: apagar o banco antigo para forçar recriação
-    await deleteDatabase(path);
-
-    _database = await openDatabase(
-      path,
-      version: 2,
-      onCreate: (db, version) async {
-        await _criarTabelas(db);
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
-          await db.execute('''
-            CREATE TABLE estudos_biblicos (
-              id INTEGER PRIMARY KEY,
-              nome TEXT
-            )
-          ''');
-        }
-      },
-    );
-
-    return _database!;
-  }
-*/
-
   static Future<Database> getDatabase() async {
     if (_database != null) return _database!;
 
@@ -78,7 +47,8 @@ class AppDatabase {
         distritoNome TEXT,
         igrejaId TEXT,
         igrejaNome TEXT,
-        sincronizado INTEGER
+        sincronizado INTEGER,
+        id_professor TEXT
       )
     ''');
 

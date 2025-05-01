@@ -159,13 +159,81 @@ class HomePage extends StatelessWidget {
                                 await DbUsuario.salvarUsuario(usuarioFirebase);
                               }
 
+                              // Armazenando o CPF logado globalmente
                               cpfLogado = cpfLimpo;
+
                               final usuario =
                                   await DbUsuario.buscarUsuarioPorCpf(
                                     cpfLogado!,
                                   );
                               if (usuario != null) {
                                 nomeUsuarioGlobal = usuario.nome;
+                                uniaoIdGlobal = usuario.uniaoId;
+                                uniaoNomeGlobal = usuario.uniaoNome;
+                                associacaoIdGlobal = usuario.associacaoId;
+                                associacaoNomeGlobal = usuario.associacaoNome;
+                                distritoIdGlobal = usuario.distritoId;
+                                distritoNomeGlobal = usuario.distritoNome;
+                                igrejaIdGlobal = usuario.igrejaId;
+                                igrejaNomeGlobal = usuario.igrejaNome;
+                              }
+
+                              // Verificar se as variáveis globais estão setadas corretamente
+                              if (uniaoIdGlobal == null ||
+                                  uniaoNomeGlobal == null ||
+                                  associacaoIdGlobal == null ||
+                                  associacaoNomeGlobal == null ||
+                                  distritoIdGlobal == null ||
+                                  distritoNomeGlobal == null ||
+                                  igrejaIdGlobal == null ||
+                                  igrejaNomeGlobal == null ||
+                                  cpfLogado == null) {
+                                // Print com os valores das variáveis globais
+                                print(
+                                  'Erro: As variáveis globais não estão setadas corretamente.',
+                                );
+                                print('uniaoIdGlobal: $uniaoIdGlobal');
+                                print('uniaoNomeGlobal: $uniaoNomeGlobal');
+                                print(
+                                  'associacaoIdGlobal: $associacaoIdGlobal',
+                                );
+                                print(
+                                  'associacaoNomeGlobal: $associacaoNomeGlobal',
+                                );
+                                print('distritoIdGlobal: $distritoIdGlobal');
+                                print(
+                                  'distritoNomeGlobal: $distritoNomeGlobal',
+                                );
+                                print('igrejaIdGlobal: $igrejaIdGlobal');
+                                print('igrejaNomeGlobal: $igrejaNomeGlobal');
+                                print('cpfLogado: $cpfLogado');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Erro: Variáveis globais não configuradas corretamente.',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              } else {
+                                print(
+                                  'Variáveis globais carregadas corretamente.',
+                                );
+                                print('uniaoIdGlobal: $uniaoIdGlobal');
+                                print('uniaoNomeGlobal: $uniaoNomeGlobal');
+                                print(
+                                  'associacaoIdGlobal: $associacaoIdGlobal',
+                                );
+                                print(
+                                  'associacaoNomeGlobal: $associacaoNomeGlobal',
+                                );
+                                print('distritoIdGlobal: $distritoIdGlobal');
+                                print(
+                                  'distritoNomeGlobal: $distritoNomeGlobal',
+                                );
+                                print('igrejaIdGlobal: $igrejaIdGlobal');
+                                print('igrejaNomeGlobal: $igrejaNomeGlobal');
+                                print('cpfLogado: $cpfLogado');
                               }
 
                               await DbEstudos.sincronizarEstudosComApi();
@@ -248,6 +316,7 @@ class HomePage extends StatelessWidget {
         igrejaId: data['igrejaId'] ?? '',
         igrejaNome: data['igrejaNome'] ?? '',
         sincronizado: true,
+        idProfessor: data['id_professor'],
       );
     } catch (e) {
       print('Erro ao buscar usuário: $e');

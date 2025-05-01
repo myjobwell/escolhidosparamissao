@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
-//import 'package:mipsmais/core/firebase_usuario_service.dart';
-//import 'package:mipsmais/databases/app_database.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:uuid/uuid.dart';
 import 'package:mipsmais/services/firebase_usuario_service.dart'
     as core_firebase;
 import '../../models/usuario_model.dart';
-//import '../../services/firebase_usuario_service.dart';
-//import '../../data/db_usuario.dart';
 import '../../utils/validators.dart';
 import '../../utils/masks.dart';
 import '../../widgets/forms_widgets/campo_cpf_widget.dart';
@@ -78,7 +75,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
       return "${nascimento.day.toString().padLeft(2, '0')}/"
           "${nascimento.month.toString().padLeft(2, '0')}/"
           "${nascimento.year}";
-    } catch (e) {
+    } catch (_) {
       return '';
     }
   }
@@ -89,9 +86,8 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
       final dia = int.parse(partes[0]);
       final mes = int.parse(partes[1]);
       final ano = int.parse(partes[2]);
-      final data = DateTime(ano, mes, dia);
-      return data.toIso8601String();
-    } catch (e) {
+      return DateTime(ano, mes, dia).toIso8601String();
+    } catch (_) {
       return '';
     }
   }
@@ -101,7 +97,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
       'assets/distritos.json',
     );
     final List<dynamic> data = jsonDecode(response);
-
     setState(() {
       _distritos =
           data
@@ -113,7 +108,6 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   Future<void> _loadIgrejas() async {
     final String response = await rootBundle.loadString('assets/igrejas.json');
     final List<dynamic> data = jsonDecode(response);
-
     setState(() {
       _igrejas =
           data
@@ -131,9 +125,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
   void _filtrarIgrejasPorDistrito(String distritoId) {
     setState(() {
       _igrejasFiltradas =
-          _igrejas
-              .where((igreja) => igreja['distritoId'] == distritoId)
-              .toList();
+          _igrejas.where((i) => i['distritoId'] == distritoId).toList();
     });
   }
 
@@ -142,11 +134,14 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
 
     if (_formKey.currentState!.validate() && _isFormValido()) {
       final nascimentoIso = _converterDataParaIso(_dataNascimento.text);
+      final uuid = const Uuid();
+      final String cpfLimpo = _cpf.text.replaceAll(RegExp(r'[^0-9]'), '');
+      final String idFinal = cpfLimpo.isNotEmpty ? cpfLimpo : uuid.v4();
 
-      Usuario usuario = Usuario(
-        id: _cpf.text,
+      final usuario = Usuario(
+        id: idFinal,
+        cpf: cpfLimpo,
         nome: _nome.text,
-        cpf: _cpf.text.replaceAll(RegExp(r'[^0-9]'), ''),
         nascimento: nascimentoIso,
         sexo: _sexo ?? '',
         telefone: telefoneFormatter.getUnmaskedText(),
@@ -173,17 +168,16 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         await DbUsuario.atualizarSincronizacao(usuario.cpf);
       }
 
-      if (widget.onComplete != null) {
-        widget.onComplete!();
-      }
+      widget.onComplete?.call();
     }
   }
 
   bool _isFormValido() {
+    final cpfLimpo = _cpf.text.replaceAll(RegExp(r'[^0-9]'), '');
     return !_cpfDuplicado &&
         _nome.text.isNotEmpty &&
-        _cpf.text.length == 14 &&
-        validarCpf(_cpf.text) &&
+        (cpfLimpo.isEmpty ||
+            (cpfLimpo.length == 11 && validarCpf(_cpf.text))) &&
         _dataNascimento.text.length == 10 &&
         _selectedDistritoNome != null &&
         _selectedIgrejaId != null &&

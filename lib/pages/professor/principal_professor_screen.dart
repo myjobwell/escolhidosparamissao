@@ -102,33 +102,6 @@ class _PageProfessorState extends State<PageProfessor> {
                 );
               },
             ),
-            /* const SizedBox(height: 20),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0B1121),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-              ),
-              icon: const Icon(Icons.person_add, color: Colors.white),
-              label: const Text(
-                'Adicionar Aluno',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onPressed: () {
-                // Futuro: abrir cadastro de aluno
-              },
-            ),
-            const SizedBox(height: 20),
-            const ListaDeAlunos(), */
           ],
         ),
       ),

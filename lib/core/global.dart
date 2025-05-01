@@ -1,2 +1,11 @@
+int? idGlobal;
 String? cpfLogado;
 String? nomeUsuarioGlobal;
+int? uniaoIdGlobal;
+String? uniaoNomeGlobal;
+int? associacaoIdGlobal;
+String? associacaoNomeGlobal;
+int? distritoIdGlobal;
+String? distritoNomeGlobal;
+String? igrejaIdGlobal;
+String? igrejaNomeGlobal;
