@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/global.dart';
-import 'FadeInWrapper.dart';
+import '../widgets/FadeInWrapper.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titulo;
@@ -8,6 +8,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool exibirBotaoVoltar;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onBackTap;
+  final double? tamanhoTitulo;
+  final bool centralizarTitulo;
 
   const CustomAppBar({
     super.key,
@@ -16,6 +18,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.exibirBotaoVoltar = true,
     this.onSettingsTap,
     this.onBackTap,
+    this.tamanhoTitulo,
+    this.centralizarTitulo = false,
   });
 
   @override
@@ -31,7 +35,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Saudação e botão de configurações
           if (exibirSaudacao)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,34 +48,37 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           if (exibirSaudacao) const SizedBox(height: 4),
 
-          // Botão de voltar + título com truncamento
-          Row(
+          Stack(
+            alignment: Alignment.center,
             children: [
               if (exibirBotaoVoltar)
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    size: 20,
-                    color: Colors.white,
+                Positioned(
+                  left: 0,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: onBackTap ?? () => Navigator.of(context).pop(),
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: onBackTap ?? () => Navigator.of(context).pop(),
-                )
-              else
-                const SizedBox(width: 48), // espaço reservado para alinhamento
-
-              const SizedBox(width: 8),
-
-              Expanded(
+                ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: exibirBotaoVoltar ? 40 : 0,
+                ),
                 child: Text(
                   titulo,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: tamanhoTitulo ?? 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
             ],

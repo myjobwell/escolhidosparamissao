@@ -76,6 +76,8 @@ flutter:
     - assets/igrejas.json
     - assets/icons/hex_coroa_verde.svg
     - assets/icons/hex_coroa_cinza.svg
+    - assets/icons/hex_coroa_dourada.svg
+    - assets/icons/hex_coroa_bronze.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

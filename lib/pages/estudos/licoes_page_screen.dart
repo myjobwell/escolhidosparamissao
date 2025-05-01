@@ -42,67 +42,6 @@ class _LicoesPageState extends State<LicoesPage> {
 
   @override
   Widget build(BuildContext context) {
-    /*
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B1121), // fundo por trás da AppBar
-      appBar: CustomAppBar(titulo: estudo?.nome ?? 'Lições'),
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white, // fundo branco da tela
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 24,
-                ),
-                child: SingleChildScrollView(
-                  /*
-                  child: Column(
-                    children: List.generate(licoes.length, (index) {
-                      final licao = licoes[index];
-                      return LicaoItemWidget(
-                        numero: index + 1,
-                        titulo: licao.nome,
-                        concluida: true,
-                      );
-                    }),
-                  ),
-                  */
-                  child: Column(
-                    children: List.generate(licoes.length, (index) {
-                      final licao = licoes[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => ConteudosPage(
-                                    idLicao: licao.id,
-                                    tituloLicao: licao.nome,
-                                  ),
-                            ),
-                          );
-                        },
-                        child: LicaoItemWidget(
-                          numero: index + 1,
-                          titulo: licao.nome,
-                          concluida: true,
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ),
-    );
-    */
     return BasePage(
       titulo: estudo?.nome ?? 'Lições',
       isLoading: isLoading,

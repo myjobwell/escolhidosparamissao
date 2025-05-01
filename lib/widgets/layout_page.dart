@@ -1,23 +1,37 @@
 import 'package:flutter/material.dart';
-import 'app_bar.dart';
+import '../widgets/app_bar.dart';
 
 class BasePage extends StatelessWidget {
   final String titulo;
   final bool isLoading;
   final Widget child;
+  final bool exibirBotaoVoltar;
+  final bool exibirSaudacao;
+  final bool centralizarTitulo;
+  final double? tamanhoTitulo;
 
   const BasePage({
     super.key,
     required this.titulo,
     required this.isLoading,
     required this.child,
+    this.exibirBotaoVoltar = true,
+    this.exibirSaudacao = true,
+    this.centralizarTitulo = false,
+    this.tamanhoTitulo,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0B1121),
-      appBar: CustomAppBar(titulo: titulo),
+      appBar: CustomAppBar(
+        titulo: titulo,
+        exibirBotaoVoltar: exibirBotaoVoltar,
+        exibirSaudacao: exibirSaudacao,
+        centralizarTitulo: centralizarTitulo,
+        tamanhoTitulo: tamanhoTitulo,
+      ),
       body:
           isLoading
               ? const Center(
