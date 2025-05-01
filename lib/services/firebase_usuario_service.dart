@@ -8,7 +8,7 @@ class FirebaseUsuarioService {
   // Função para salvar o usuário no Firestore
   static Future<bool> salvarUsuario(Usuario usuario) async {
     try {
-      await _collection.doc(usuario.cpf).set(usuario.toMap());
+      await _collection.doc(usuario.id).set(usuario.toMap());
       return true; // sucesso
     } catch (e) {
       print('Erro ao salvar usuário no Firebase: $e');

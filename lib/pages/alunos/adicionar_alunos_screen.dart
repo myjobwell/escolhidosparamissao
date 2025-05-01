@@ -63,6 +63,9 @@ class _AdicionarAlunoPageState extends State<AdicionarAlunoPage> {
       // Gerar o UUID como ID único
       final String idFinal = uuid.v4(); // Gerar UUID aqui
 
+      // 🚨 DEBUG: Verificar o ID gerado
+      print('🔍 ID gerado com uuid.v4(): $idFinal');
+
       // Verifique se o idFinal está correto
       if (idFinal.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -95,6 +98,9 @@ class _AdicionarAlunoPageState extends State<AdicionarAlunoPage> {
         idProfessor: cpfLogado, // O idProfessor pode ser o cpfLogado
       );
 
+      // 🚨 DEBUG: Verificar o ID dentro do objeto usuario
+      print('🧾 usuario.id: ${usuario.id}');
+
       // Salvar o usuário no banco de dados local
       await DbUsuario.salvarUsuario(usuario);
 
@@ -104,7 +110,7 @@ class _AdicionarAlunoPageState extends State<AdicionarAlunoPage> {
 
       if (sucessoFirebase) {
         // Se a operação no Firebase for bem-sucedida, atualiza a sincronização
-        await DbUsuario.atualizarSincronizacao(usuario.cpf);
+        await DbUsuario.atualizarSincronizacao(usuario.id);
       }
 
       Navigator.pop(context); // Voltar para a tela anterior
