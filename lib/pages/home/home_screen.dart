@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widgets/hover_button_widget.dart';
-import '../../usuario/pages/usuario_form_page.dart';
-import '../../usuario/utils/masks.dart'; // ✅ Máscara de CPF
-import '../../professor/page_professor.dart'; // Corrigido caminho
-import '../../../core/global.dart'; // Variável global do CPF
-import '../../../databases/app_database.dart'; // Banco de dados local
-import '../../../models/usuario_model.dart'; // Modelo do usuário
-import '../../../databases/db_usuario.dart';
+import '../../widgets/button.dart';
+import '../usuario/usuario_cadastro_screen.dart';
+import '../../utils/masks.dart';
+import '../professor/principal_professor_screen.dart';
+import '../../core/global.dart';
+import '../../databases/app_database.dart';
+import '../../models/usuario_model.dart';
+import '../../databases/db_usuario.dart';
+import '../../databases/db_estudos.dart'; // ✅ import necessário
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // Seus círculos de fundo
+            // Elementos decorativos
             Positioned(top: 80, left: 30, child: _circle(60, Colors.white12)),
             Positioned(top: 140, right: 50, child: _circle(16, Colors.white10)),
             Positioned(
@@ -39,6 +40,7 @@ class HomePage extends StatelessWidget {
               right: -20,
               child: _circle(80, Colors.white10),
             ),
+
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -57,6 +59,8 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                   const SizedBox(height: 80),
+
+                  // Área de login
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     padding: const EdgeInsets.symmetric(
@@ -103,7 +107,9 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        HoverButtonWidget(
+
+                        // Botão de login
+                        ButtonWidget(
                           label: 'Acessar',
                           backgroundColor: const Color(0xFF0B1121),
                           hoverColor: const Color(0xFF1F2A3F),
@@ -125,7 +131,6 @@ class HomePage extends StatelessWidget {
 
                             final usuarioFirebase =
                                 await _buscarUsuarioNoFirebase(cpfLimpo);
-
                             if (usuarioFirebase == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -139,39 +144,36 @@ class HomePage extends StatelessWidget {
 
                             final usuarioLocal =
                                 await DbUsuario.buscarUsuarioPorCpf(cpfLimpo);
-
                             if (usuarioLocal == null) {
-                              // Salvar no banco local
                               await DbUsuario.salvarUsuario(usuarioFirebase);
                             }
 
                             cpfLogado = cpfLimpo;
-                            // Buscar nome do usuário e salvar na variável global
+
                             final usuario = await DbUsuario.buscarUsuarioPorCpf(
                               cpfLogado!,
                             );
                             if (usuario != null) {
                               nomeUsuarioGlobal = usuario.nome;
                             }
-                            // Agora sim, navegar
+
+                            // ✅ Sincroniza os estudos bíblicos após login
+                            await DbEstudos.sincronizarEstudosComApi();
+
+                            // Navega para a tela principal
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const PageProfessor(),
                               ),
                             );
-                            /*
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const PageProfessor(),
-                              ),
-                            );
-                          */
                           },
                         ),
+
                         const SizedBox(height: 15),
-                        HoverButtonWidget(
+
+                        // Botão de cadastro
+                        ButtonWidget(
                           label: 'Criar uma conta',
                           backgroundColor: const Color(0xFFE6E6E6),
                           hoverColor: const Color(0xFFD0D0D0),
@@ -197,7 +199,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Função para buscar no Firebase e retornar Usuario (ou null)
   Future<Usuario?> _buscarUsuarioNoFirebase(String cpf) async {
     try {
       final doc =
@@ -205,35 +206,32 @@ class HomePage extends StatelessWidget {
               .collection('usuarios')
               .doc(cpf)
               .get();
+      if (!doc.exists) return null;
 
-      if (doc.exists) {
-        final data = doc.data();
-        if (data == null) return null;
+      final data = doc.data();
+      if (data == null) return null;
 
-        return Usuario(
-          id: data['id'] ?? cpf,
-          nome: data['nome'] ?? '',
-          cpf: cpf,
-          sexo: data['sexo'] ?? '',
-          telefone: data['telefone'] ?? '',
-          email: data['email'] ?? '',
-          nascimento: data['nascimento'] ?? '',
-          tipoUsuario: data['tipo_usuario'] ?? '',
-          divisaoId: data['divisaoId'] ?? 0,
-          divisaoNome: data['divisaoNome'] ?? '',
-          uniaoId: data['uniaoId'] ?? 0,
-          uniaoNome: data['uniaoNome'] ?? '',
-          associacaoId: data['associacaoId'] ?? 0,
-          associacaoNome: data['associacaoNome'] ?? '',
-          distritoId: data['distritoId'] ?? 0,
-          distritoNome: data['distritoNome'] ?? '',
-          igrejaId: data['igrejaId'] ?? '',
-          igrejaNome: data['igrejaNome'] ?? '',
-          sincronizado: true,
-        );
-      } else {
-        return null;
-      }
+      return Usuario(
+        id: data['id'] ?? cpf,
+        nome: data['nome'] ?? '',
+        cpf: cpf,
+        sexo: data['sexo'] ?? '',
+        telefone: data['telefone'] ?? '',
+        email: data['email'] ?? '',
+        nascimento: data['nascimento'] ?? '',
+        tipoUsuario: data['tipo_usuario'] ?? '',
+        divisaoId: data['divisaoId'] ?? 0,
+        divisaoNome: data['divisaoNome'] ?? '',
+        uniaoId: data['uniaoId'] ?? 0,
+        uniaoNome: data['uniaoNome'] ?? '',
+        associacaoId: data['associacaoId'] ?? 0,
+        associacaoNome: data['associacaoNome'] ?? '',
+        distritoId: data['distritoId'] ?? 0,
+        distritoNome: data['distritoNome'] ?? '',
+        igrejaId: data['igrejaId'] ?? '',
+        igrejaNome: data['igrejaNome'] ?? '',
+        sincronizado: true,
+      );
     } catch (e) {
       print('Erro ao buscar usuário: $e');
       return null;

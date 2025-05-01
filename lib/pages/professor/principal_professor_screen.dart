@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/global.dart';
-import '../../components/card_widget.dart';
-import '../../components/lista_de_alunos.dart';
+import '../../widgets/card_widget.dart';
+import '../../widgets/lista_de_alunos.dart';
 import '../../databases/db_usuario.dart';
-import '../estudos/estudos_biblicos.dart';
-import '../../components/app_bar.dart';
-import '../../components/FadeInWrapper.dart'; // ✅ Import do FadeInWrapper
+import '../estudos/estudos_biblicos_screen.dart';
+import '../../widgets/app_bar.dart';
+import '../../widgets/FadeInWrapper.dart'; // ✅ Import do FadeInWrapper
 
 class PageProfessor extends StatefulWidget {
   const PageProfessor({super.key});

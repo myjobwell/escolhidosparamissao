@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../utils/masks.dart';
-import '../utils/validators.dart';
+import '../../utils/masks.dart';
+import '../../utils/validators.dart';
 
 class CampoCpfWidget extends StatefulWidget {
   final TextEditingController controller;

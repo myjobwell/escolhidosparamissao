@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../usuario_form_widget.dart';
-import '../../professor/page_professor.dart'; // ✅ Import da PageProfessor
+import 'usuario_form.dart';
+import '../professor/principal_professor_screen.dart'; // ✅ Import da PageProfessor
 
 class UsuarioFormPage extends StatelessWidget {
   const UsuarioFormPage({super.key});

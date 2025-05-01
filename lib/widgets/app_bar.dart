@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/global.dart';
-import '../components/FadeInWrapper.dart';
+import 'FadeInWrapper.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titulo;

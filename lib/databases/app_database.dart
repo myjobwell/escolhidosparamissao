@@ -4,10 +4,14 @@ import 'package:path/path.dart';
 class AppDatabase {
   static Database? _database;
 
+  /*
   static Future<Database> getDatabase() async {
     if (_database != null) return _database!;
 
     final path = join(await getDatabasesPath(), 'mipsmais.db');
+
+    // ⚠️ Apenas durante o desenvolvimento: apagar o banco antigo para forçar recriação
+    await deleteDatabase(path);
 
     _database = await openDatabase(
       path,
@@ -16,11 +20,37 @@ class AppDatabase {
         await _criarTabelas(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        // Este bloco é útil quando você precisa adicionar novas tabelas em versões futuras
         if (oldVersion < 2) {
-          // Neste exemplo, nenhuma nova tabela além das do onCreate
-          // Futuras tabelas podem ser adicionadas aqui
+          await db.execute('''
+            CREATE TABLE estudos_biblicos (
+              id INTEGER PRIMARY KEY,
+              nome TEXT
+            )
+          ''');
         }
+      },
+    );
+
+    return _database!;
+  }
+*/
+
+  static Future<Database> getDatabase() async {
+    if (_database != null) return _database!;
+
+    final path = join(await getDatabasesPath(), 'mipsmais.db');
+
+    // ⚠️ Apenas durante o desenvolvimento: apagar o banco antigo para forçar recriação
+    await deleteDatabase(path);
+
+    _database = await openDatabase(
+      path,
+      version: 2,
+      onCreate: (db, version) async {
+        await _criarTabelas(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // Adicione aqui lógica de migração, se necessário
       },
     );
 
@@ -53,10 +83,19 @@ class AppDatabase {
     ''');
 
     await db.execute('''
-      CREATE TABLE estudos_biblicos (
-        id INTEGER PRIMARY KEY,
-        nome TEXT
-      )
-    ''');
+    CREATE TABLE estudos_biblicos (
+      id INTEGER PRIMARY KEY,
+      nome TEXT
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE licoes (
+      idLicao INTEGER PRIMARY KEY,
+      licao TEXT,
+      idEstudo INTEGER,
+      FOREIGN KEY (idEstudo) REFERENCES estudos_biblicos(id) ON DELETE CASCADE ON UPDATE NO ACTION
+    )
+  ''');
   }
 }

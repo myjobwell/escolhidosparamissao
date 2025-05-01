@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class HoverButtonWidget extends StatefulWidget {
+class ButtonWidget extends StatefulWidget {
   final String label;
   final VoidCallback onPressed;
   final Color backgroundColor;
   final Color hoverColor;
   final Color textColor;
 
-  const HoverButtonWidget({
+  const ButtonWidget({
     super.key,
     required this.label,
     required this.onPressed,
@@ -17,10 +17,10 @@ class HoverButtonWidget extends StatefulWidget {
   });
 
   @override
-  State<HoverButtonWidget> createState() => _HoverButtonWidgetState();
+  State<ButtonWidget> createState() => _ButtonWidgetState();
 }
 
-class _HoverButtonWidgetState extends State<HoverButtonWidget> {
+class _ButtonWidgetState extends State<ButtonWidget> {
   bool isHovered = false;
 
   @override

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../utils/masks.dart';
+import '../../utils/masks.dart';
 
-class CampoTelefoneWidget extends StatelessWidget {
+class CampoDataNascimentoWidget extends StatelessWidget {
   final TextEditingController controller;
   final bool showErrors;
 
-  const CampoTelefoneWidget({
+  const CampoDataNascimentoWidget({
     super.key,
     required this.controller,
     required this.showErrors,
@@ -16,10 +16,10 @@ class CampoTelefoneWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      keyboardType: TextInputType.phone,
-      inputFormatters: [telefoneFormatter],
+      keyboardType: TextInputType.datetime,
+      inputFormatters: [dataNascimentoFormatter],
       decoration: InputDecoration(
-        labelText: 'Telefone',
+        labelText: 'Data de Nascimento',
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
@@ -38,8 +38,10 @@ class CampoTelefoneWidget extends StatelessWidget {
       ),
       validator: (value) {
         if (!showErrors) return null;
-        if (value == null || value.isEmpty) return 'Informe o telefone';
-        if (!telefoneFormatter.isFill()) return 'Telefone incompleto';
+        if (value == null || value.isEmpty)
+          return 'Informe a data de nascimento';
+        if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value))
+          return 'Formato inválido';
         return null;
       },
     );

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import '../../components/FadeInWrapper.dart';
+import 'FadeInWrapper.dart';
 
-class EstudoItem {
+//este bloco recebe o titulo, subtitulo e icone
+// e exibe na tela
+
+class BlocoItem {
   final String titulo;
   final String subtitulo;
   final IconData icon;
 
-  EstudoItem(this.titulo, this.subtitulo, this.icon);
+  BlocoItem(this.titulo, this.subtitulo, this.icon);
 }
 
-class EstudoItemWidget extends StatelessWidget {
-  final EstudoItem item;
+class BlocoItemWidget extends StatelessWidget {
+  final BlocoItem item;
   final bool selecionado;
   final VoidCallback onTap;
   final int index;
 
-  const EstudoItemWidget({
+  const BlocoItemWidget({
     super.key,
     required this.item,
     required this.selecionado,

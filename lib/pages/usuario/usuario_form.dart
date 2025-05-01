@@ -8,16 +8,16 @@ import 'package:mipsmais/services/firebase_usuario_service.dart'
 import '../../models/usuario_model.dart';
 //import '../../services/firebase_usuario_service.dart';
 //import '../../data/db_usuario.dart';
-import 'utils/validators.dart';
-import 'utils/masks.dart';
-import 'widgets/campo_cpf_widget.dart';
-import 'widgets/campo_telefone_widget.dart';
-import 'widgets/campo_texto_widget.dart';
-import 'widgets/dropdown_distrito_widget.dart';
-import 'widgets/dropdown_igreja_widget.dart';
-import 'widgets/campo_data_nascimento_widget.dart';
-import 'widgets/campo_sexo_widget.dart';
-import '../home/widgets/hover_button_widget.dart';
+import '../../utils/validators.dart';
+import '../../utils/masks.dart';
+import '../../widgets/forms_widgets/campo_cpf_widget.dart';
+import '../../widgets/forms_widgets/campo_telefone_widget.dart';
+import '../../widgets/forms_widgets/campo_texto_widget.dart';
+import '../../widgets/forms_widgets/dropdown_distrito_widget.dart';
+import '../../widgets/forms_widgets/dropdown_igreja_widget.dart';
+import '../../widgets/forms_widgets/campo_data_nascimento_widget.dart';
+import '../../widgets/forms_widgets/campo_sexo_widget.dart';
+import '../../widgets/button.dart';
 import '../../databases/db_usuario.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
@@ -267,7 +267,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: HoverButtonWidget(
+              child: ButtonWidget(
                 label: 'Cadastrar',
                 backgroundColor: const Color(0xFF0B1121),
                 hoverColor: const Color(0xFF1F2A3F),
