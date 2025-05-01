@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LicaoItemWidget extends StatelessWidget {
   final int numero;
@@ -44,7 +45,7 @@ class LicaoItemWidget extends StatelessWidget {
           ),
 
           // Ícone de progresso (hexágono com coroa)
-          Image.asset(
+          SvgPicture.asset(
             concluida
                 ? 'assets/icons/hex_coroa_verde.svg'
                 : 'assets/icons/hex_coroa_cinza.svg',

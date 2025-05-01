@@ -6,9 +6,9 @@ import '../../widgets/licao_item_widget.dart';
 import '../../widgets/app_bar.dart';
 
 class LicoesPage extends StatefulWidget {
-  final EstudoBiblico estudo;
+  final int estudoId;
 
-  const LicoesPage({super.key, required this.estudo});
+  const LicoesPage({super.key, required this.estudoId});
 
   @override
   State<LicoesPage> createState() => _LicoesPageState();
@@ -16,18 +16,24 @@ class LicoesPage extends StatefulWidget {
 
 class _LicoesPageState extends State<LicoesPage> {
   List<Licao> licoes = [];
+  EstudoBiblico? estudo;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    carregarLicoes();
+    carregarDados();
   }
 
-  Future<void> carregarLicoes() async {
-    final resultado = await DbEstudos.listarLicoesPorEstudo(widget.estudo.id);
+  Future<void> carregarDados() async {
+    final estudos = await DbEstudos.listarEstudos();
+    estudo = estudos.firstWhere(
+      (e) => e.id == widget.estudoId,
+      orElse: () => EstudoBiblico(id: 0, nome: 'Estudo'),
+    );
+
+    licoes = await DbEstudos.listarLicoesPorEstudo(widget.estudoId);
     setState(() {
-      licoes = resultado;
       isLoading = false;
     });
   }
@@ -36,7 +42,7 @@ class _LicoesPageState extends State<LicoesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
-      appBar: CustomAppBar(titulo: widget.estudo.nome),
+      appBar: CustomAppBar(titulo: estudo?.nome ?? 'Lições'),
       body:
           isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -48,7 +54,7 @@ class _LicoesPageState extends State<LicoesPage> {
                   return LicaoItemWidget(
                     numero: index + 1,
                     titulo: licao.nome,
-                    concluida: index < 8, // lógica de exemplo
+                    concluida: index < 8,
                   );
                 },
               ),

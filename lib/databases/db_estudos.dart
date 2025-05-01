@@ -46,12 +46,12 @@ class DbEstudos {
   }
 
   /// Lista as lições do banco
-  static Future<List<Licao>> listarLicoesPorEstudo(int estudoId) async {
+  static Future<List<Licao>> listarLicoesPorEstudo(int idEstudo) async {
     final db = await AppDatabase.getDatabase();
     final result = await db.query(
       'licoes',
-      where: 'estudoId = ?',
-      whereArgs: [estudoId],
+      where: 'idEstudo = ?',
+      whereArgs: [idEstudo],
     );
     return result.map((e) => Licao.fromMap(e)).toList();
   }
@@ -100,7 +100,7 @@ class DbEstudos {
                   (e) => Licao(
                     id: e['idLicao'],
                     nome: e['licao'],
-                    estudoId: e['idEstudo'],
+                    idEstudo: e['idEstudo'],
                   ),
                 )
                 .toList();

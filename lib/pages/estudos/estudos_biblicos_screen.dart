@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/FadeInWrapper.dart';
 import '../../widgets/bloco_item_widget.dart';
-import '../../databases/db_estudos.dart';
 import '../../models/estudos_biblicos_model.dart';
+import '../../databases/db_estudos.dart';
+import '../estudos/licoes_page_screen.dart'; // <- atualizado corretamente
 
 class EstudosBiblicosPage extends StatefulWidget {
   const EstudosBiblicosPage({super.key});
@@ -13,9 +14,9 @@ class EstudosBiblicosPage extends StatefulWidget {
 }
 
 class _EstudosBiblicosPageState extends State<EstudosBiblicosPage> {
-  List<BlocoItem> estudos = [];
+  List<EstudoBiblico> estudos = [];
   bool isLoading = true;
-  int? _indiceSelecionado = 0;
+  int? _indiceSelecionado;
 
   @override
   void initState() {
@@ -26,16 +27,7 @@ class _EstudosBiblicosPageState extends State<EstudosBiblicosPage> {
   Future<void> carregarEstudosDoBanco() async {
     final dados = await DbEstudos.listarEstudos();
     setState(() {
-      estudos =
-          dados
-              .map(
-                (e) => BlocoItem(
-                  e.nome,
-                  '20 Lições',
-                  Icons.menu_book, // ícone genérico temporário
-                ),
-              )
-              .toList();
+      estudos = dados;
       isLoading = false;
     });
   }
@@ -73,17 +65,34 @@ class _EstudosBiblicosPageState extends State<EstudosBiblicosPage> {
                                 childAspectRatio: 0.95,
                               ),
                           itemBuilder: (context, index) {
-                            final item = estudos[index];
-                            final bool selecionado =
-                                _indiceSelecionado == index;
+                            final estudo = estudos[index];
+                            final selecionado = _indiceSelecionado == index;
 
                             return BlocoItemWidget(
-                              item: item,
+                              item: BlocoItem(
+                                estudo.nome,
+                                '20 Lições',
+                                Icons.menu_book,
+                              ),
                               selecionado: selecionado,
                               index: index,
                               onTap: () {
                                 setState(() {
                                   _indiceSelecionado = index;
+                                });
+
+                                // ✅ Navegação segura para nova tela usando apenas o ID
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) =>
+                                              LicoesPage(estudoId: estudo.id),
+                                    ),
+                                  );
                                 });
                               },
                             );

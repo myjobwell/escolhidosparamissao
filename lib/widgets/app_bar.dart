@@ -31,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Primeira linha: Saudação + configurações
+          // Saudação e botão de configurações
           if (exibirSaudacao)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,28 +43,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
-
           if (exibirSaudacao) const SizedBox(height: 4),
 
-          /// Segunda linha: seta à esquerda e título centralizado
-          Stack(
-            alignment: Alignment.center,
+          // Botão de voltar + título com truncamento
+          Row(
             children: [
               if (exibirBotaoVoltar)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: onBackTap ?? () => Navigator.of(context).pop(),
+                IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    size: 20,
+                    color: Colors.white,
                   ),
-                ),
-              Center(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: onBackTap ?? () => Navigator.of(context).pop(),
+                )
+              else
+                const SizedBox(width: 48), // espaço reservado para alinhamento
+
+              const SizedBox(width: 8),
+
+              Expanded(
                 child: Text(
                   titulo,
                   style: const TextStyle(
@@ -72,6 +72,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
