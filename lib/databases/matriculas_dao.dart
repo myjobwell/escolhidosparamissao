@@ -46,7 +46,7 @@ class MatriculaDao {
     return resultado.isNotEmpty;
   }
 
-  //// Retorna a primeira matrícula de um usuário
+  /// Retorna a primeira matrícula de um usuário
   Future<MatriculaModel?> getPrimeiraMatriculaPorUsuario(
     String idUsuario,
   ) async {
@@ -64,5 +64,26 @@ class MatriculaDao {
     }
 
     return null;
+  }
+
+  /// Atualizar apenas o campo 'sincronizado' com base no ID da matrícula
+  Future<void> atualizarSincronizacao(int id) async {
+    final db = await AppDatabase.getDatabase();
+
+    await db.update(
+      _tabela,
+      {'sincronizado': 1},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  /// Buscar matrículas não sincronizadas
+  Future<List<MatriculaModel>> buscarMatriculasNaoSincronizadas() async {
+    final db = await AppDatabase.getDatabase();
+
+    final result = await db.query(_tabela, where: 'sincronizado = 0');
+
+    return result.map((map) => MatriculaModel.fromMap(map)).toList();
   }
 }

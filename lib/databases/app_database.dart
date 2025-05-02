@@ -83,6 +83,7 @@ class AppDatabase {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_usuario TEXT,
     id_estudo_biblico INTEGER,
+    sincronizado INTEGER,
     data_matricula TEXT,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE NO ACTION,
     FOREIGN KEY (id_estudo_biblico) REFERENCES estudos_biblicos(id) ON DELETE CASCADE ON UPDATE NO ACTION

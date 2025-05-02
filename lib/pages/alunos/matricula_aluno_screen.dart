@@ -8,6 +8,7 @@ import '../../databases/estudos_dao.dart';
 import '../../models/matricula_model.dart';
 import '../../databases/matriculas_dao.dart';
 import '../alunos/aluno_painel_screen.dart';
+import '../../services/firebase_matricula_service.dart';
 
 class MatriculaAlunoScreen extends StatefulWidget {
   final String idAluno;
@@ -46,29 +47,12 @@ class _MatriculaAlunoScreenState extends State<MatriculaAlunoScreen> {
     });
   }
 
-  /*  void _confirmarMatricula() {
-    if (_indiceSelecionado == null) return;
-
-    final estudoSelecionado = estudos[_indiceSelecionado!];
-
-    // Aqui você pode chamar um método do DAO para salvar a matrícula com:
-    // widget.idAluno, estudoSelecionado.id
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Aluno matriculado em ${estudoSelecionado.nome}')),
-    );
-
-    // Exemplo: voltar à tela anterior
-    Navigator.pop(context);
-  } */
-
   void _confirmarMatricula() async {
     if (_indiceSelecionado == null) return;
 
     final estudoSelecionado = estudos[_indiceSelecionado!];
     final idEstudo = estudoSelecionado.id;
     final idAluno = widget.idAluno;
-
     final dataAtual = DateTime.now().toIso8601String();
 
     final novaMatricula = MatriculaModel(
@@ -77,8 +61,13 @@ class _MatriculaAlunoScreenState extends State<MatriculaAlunoScreen> {
       dataMatricula: dataAtual,
     );
 
+    // 1. Salva localmente
     await MatriculaDao().insertMatricula(novaMatricula);
 
+    // 2. Sincroniza com Firebase
+    await FirebaseMatriculaService.sincronizarMatriculas();
+
+    // 3. Mostra confirmação e navega
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Aluno matriculado em ${estudoSelecionado.nome}')),
     );
@@ -97,8 +86,8 @@ class _MatriculaAlunoScreenState extends State<MatriculaAlunoScreen> {
       titulo: 'Matricular Aluno',
       isLoading: isLoading,
       exibirBotaoVoltar: true,
-      exibirSaudacao: false,
-      centralizarTitulo: false,
+      exibirSaudacao: true,
+      centralizarTitulo: true,
       child:
           estudos.isEmpty
               ? const Center(child: Text('Nenhum estudo encontrado.'))
