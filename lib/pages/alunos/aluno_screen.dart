@@ -2,9 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/layout_page.dart';
 import '../../pages/alunos/adicionar_alunos_screen.dart';
+import '../../models/usuario_model.dart';
+import '../../databases/usuario_dao.dart';
+import '../../core/global.dart'; // supondo que você tenha cpfLogado aqui
 
-class AlunosPage extends StatelessWidget {
+class AlunosPage extends StatefulWidget {
   const AlunosPage({super.key});
+
+  @override
+  State<AlunosPage> createState() => _AlunosPageState();
+}
+
+class _AlunosPageState extends State<AlunosPage> {
+  List<Usuario> _alunos = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarAlunos();
+  }
+
+  Future<void> _carregarAlunos() async {
+    final alunos = await DbUsuario.buscarUsuariosPorProfessor(cpfLogado!);
+    setState(() {
+      _alunos = alunos;
+      _isLoading = false;
+    });
+  }
 
   void _navegarParaAdicionarAluno(BuildContext context) {
     Navigator.push(
@@ -15,47 +40,9 @@ class AlunosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final alunos = [
-      {
-        'posicao': 1,
-        'nome': 'Adison Press',
-        'pontos': 2569,
-        'avatar': '👩',
-        'iconCoroa': 'assets/icons/hex_coroa_dourada.svg',
-      },
-      {
-        'posicao': 2,
-        'nome': 'Ruben Geidt',
-        'pontos': 1469,
-        'avatar': '👨',
-        'iconCoroa': 'assets/icons/hex_coroa_dourada.svg',
-      },
-      {
-        'posicao': 3,
-        'nome': 'Jakob Levin',
-        'pontos': 1053,
-        'avatar': '👨🏾',
-        'iconCoroa': 'assets/icons/hex_coroa_verde.svg',
-      },
-      {
-        'posicao': 4,
-        'nome': 'Madelyn Dias',
-        'pontos': 590,
-        'avatar': '👩‍🎓',
-        'iconCoroa': 'assets/icons/hex_coroa_cinza.svg',
-      },
-      {
-        'posicao': 5,
-        'nome': 'Zain Vaccaro',
-        'pontos': 448,
-        'avatar': '👨🏿‍🏫',
-        'iconCoroa': 'assets/icons/hex_coroa_cinza.svg',
-      },
-    ];
-
     return BasePage(
       titulo: 'Meus Alunos',
-      isLoading: false,
+      isLoading: _isLoading,
       exibirBotaoVoltar: true,
       centralizarTitulo: true,
       child: Column(
@@ -80,18 +67,28 @@ class AlunosPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          ...alunos.map((aluno) {
+          if (_alunos.isEmpty && !_isLoading)
+            const Center(child: Text('Nenhum aluno encontrado')),
+          ..._alunos.asMap().entries.map((entry) {
+            final index = entry.key;
+            final aluno = entry.value;
+
+            // Definir o emoji com base no sexo
+            String avatarEmoji =
+                aluno.sexo.toLowerCase().contains('fem') ? '👩' : '👨';
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AlunoItem(
-                posicao: aluno['posicao'] as int,
-                nome: aluno['nome'] as String,
-                pontos: aluno['pontos'] as int,
-                avatar: aluno['avatar'] as String,
-                iconCoroa: aluno['iconCoroa'] as String?,
+                posicao: index + 1,
+                nome: aluno.nome,
+                pontos: 0, // valor fixo por enquanto
+                avatar: avatarEmoji,
+                iconCoroa:
+                    'assets/icons/hex_coroa_cinza.svg', // fixo por enquanto
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
