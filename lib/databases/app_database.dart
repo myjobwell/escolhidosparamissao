@@ -10,7 +10,7 @@ class AppDatabase {
     final path = join(await getDatabasesPath(), 'mipsmais.db');
 
     // ⚠️ Apenas durante o desenvolvimento: apagar o banco antigo para forçar recriação
-    await deleteDatabase(path);
+    //await deleteDatabase(path);
 
     _database = await openDatabase(
       path,

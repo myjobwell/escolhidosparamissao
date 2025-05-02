@@ -32,16 +32,31 @@ class DbUsuario {
     }
   }
 
-  /// Atualizar apenas o campo 'sincronizado'
-  static Future<void> atualizarSincronizacao(String cpf) async {
+  /// Atualizar apenas o campo 'sincronizado' com base no ID do usuário
+  static Future<void> atualizarSincronizacao(String id) async {
     final db = await AppDatabase.getDatabase();
 
     await db.update(
       'usuarios',
       {'sincronizado': 1},
-      where: 'cpf = ?',
-      whereArgs: [cpf],
+      where: 'id = ?',
+      whereArgs: [id],
     );
+  }
+
+  //Funcao para sincronizar o usuario
+  static Future<List<Usuario>> getUsuariosNaoSincronizados() async {
+    final db = await AppDatabase.getDatabase();
+
+    final maps = await db.query(
+      'usuarios',
+      where: 'sincronizado = ?',
+      whereArgs: [0],
+    );
+
+    return maps
+        .map((map) => Usuario.fromMap(map, map['id'] as String))
+        .toList();
   }
 
   /// Buscar usuários não sincronizados

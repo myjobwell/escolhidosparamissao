@@ -12,6 +12,7 @@ import '../../widgets/button.dart';
 import '../../databases/db_usuario.dart';
 import '../../widgets/layout_page.dart';
 import '../../core/global.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdicionarAlunoPage extends StatefulWidget {
   const AdicionarAlunoPage({super.key});
@@ -105,11 +106,26 @@ class _AdicionarAlunoPageState extends State<AdicionarAlunoPage> {
       await DbUsuario.salvarUsuario(usuario);
 
       // Tentar salvar o usuário no Firebase
+      /*
+      bool sucessoFirebase = await core_firebase
+          .FirebaseUsuarioService.salvarUsuario(usuario);
+      */
+      // Tentar salvar o usuário no Firebase
       bool sucessoFirebase = await core_firebase
           .FirebaseUsuarioService.salvarUsuario(usuario);
 
-      if (sucessoFirebase) {
+      /* if (sucessoFirebase) {
         // Se a operação no Firebase for bem-sucedida, atualiza a sincronização
+        await DbUsuario.atualizarSincronizacao(usuario.id);
+      } */
+      if (sucessoFirebase) {
+        // Atualiza sincronizado = 1 no Firebase
+        await FirebaseFirestore.instance
+            .collection('usuarios')
+            .doc(usuario.id)
+            .update({'sincronizado': 1});
+
+        // Atualiza sincronizado = 1 no banco local
         await DbUsuario.atualizarSincronizacao(usuario.id);
       }
 
