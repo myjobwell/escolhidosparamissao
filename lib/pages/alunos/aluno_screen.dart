@@ -4,7 +4,7 @@ import '../../widgets/layout_page.dart';
 import '../../pages/alunos/adicionar_alunos_screen.dart';
 import '../../models/usuario_model.dart';
 import '../../databases/usuario_dao.dart';
-import '../../core/global.dart'; // supondo que você tenha cpfLogado aqui
+import '../../core/global.dart'; // onde está cpfLogado
 
 class AlunosPage extends StatefulWidget {
   const AlunosPage({super.key});
@@ -17,6 +17,33 @@ class _AlunosPageState extends State<AlunosPage> {
   List<Usuario> _alunos = [];
   bool _isLoading = true;
 
+  // Emojis masculinos e femininos
+  final List<String> emojisMasculinos = [
+    '👨',
+    '👨🏻',
+    '👨🏼',
+    '👨🏽',
+    '👨🏾',
+    '👨🏿',
+    '🧔',
+    '🧔🏻',
+    '🧔🏽',
+    '🧔🏾',
+  ];
+
+  final List<String> emojisFemininos = [
+    '👩',
+    '👩🏻',
+    '👩🏼',
+    '👩🏽',
+    '👩🏾',
+    '👩🏿',
+    '👩‍🎓',
+    '👩‍🏫',
+    '👩‍⚕️',
+    '👩‍💼',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -24,6 +51,7 @@ class _AlunosPageState extends State<AlunosPage> {
   }
 
   Future<void> _carregarAlunos() async {
+    setState(() => _isLoading = true);
     final alunos = await DbUsuario.buscarUsuariosPorProfessor(cpfLogado!);
     setState(() {
       _alunos = alunos;
@@ -31,11 +59,22 @@ class _AlunosPageState extends State<AlunosPage> {
     });
   }
 
+  /// 🚀 Ao voltar da tela de cadastro, atualiza a lista
   void _navegarParaAdicionarAluno(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AdicionarAlunoPage()),
-    );
+    ).then((_) {
+      _carregarAlunos(); // Recarrega ao voltar
+    });
+  }
+
+  /// Sorteia um emoji com base no sexo do aluno
+  String sortearEmoji(String sexo) {
+    final isFeminino = sexo.toLowerCase().contains('fem');
+    final lista = isFeminino ? emojisFemininos : emojisMasculinos;
+    lista.shuffle();
+    return lista.first;
   }
 
   @override
@@ -73,19 +112,16 @@ class _AlunosPageState extends State<AlunosPage> {
             final index = entry.key;
             final aluno = entry.value;
 
-            // Definir o emoji com base no sexo
-            String avatarEmoji =
-                aluno.sexo.toLowerCase().contains('fem') ? '👩' : '👨';
+            final avatarEmoji = sortearEmoji(aluno.sexo);
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AlunoItem(
                 posicao: index + 1,
                 nome: aluno.nome,
-                pontos: 0, // valor fixo por enquanto
+                pontos: 0, // valor fixo temporário
                 avatar: avatarEmoji,
-                iconCoroa:
-                    'assets/icons/hex_coroa_cinza.svg', // fixo por enquanto
+                iconCoroa: 'assets/icons/hex_coroa_cinza.svg',
               ),
             );
           }),
