@@ -4,7 +4,11 @@ import '../../widgets/layout_page.dart';
 import '../../pages/alunos/adicionar_alunos_screen.dart';
 import '../../models/usuario_model.dart';
 import '../../databases/usuario_dao.dart';
-import '../../core/global.dart'; // onde está cpfLogado
+import '../../core/global.dart';
+import '../../pages/alunos/aluno_painel_screen.dart';
+import '../../pages/alunos/matricula_aluno_screen.dart';
+import '../../models/matricula_model.dart';
+import '../../databases/matriculas_dao.dart';
 
 class AlunosPage extends StatefulWidget {
   const AlunosPage({super.key});
@@ -17,7 +21,6 @@ class _AlunosPageState extends State<AlunosPage> {
   List<Usuario> _alunos = [];
   bool _isLoading = true;
 
-  // Emojis masculinos e femininos
   final List<String> emojisMasculinos = [
     '👨',
     '👨🏻',
@@ -59,22 +62,48 @@ class _AlunosPageState extends State<AlunosPage> {
     });
   }
 
-  /// 🚀 Ao voltar da tela de cadastro, atualiza a lista
   void _navegarParaAdicionarAluno(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AdicionarAlunoPage()),
     ).then((_) {
-      _carregarAlunos(); // Recarrega ao voltar
+      _carregarAlunos();
     });
   }
 
-  /// Sorteia um emoji com base no sexo do aluno
   String sortearEmoji(String sexo) {
     final isFeminino = sexo.toLowerCase().contains('fem');
     final lista = isFeminino ? emojisFemininos : emojisMasculinos;
     lista.shuffle();
     return lista.first;
+  }
+
+  Future<void> verificarMatriculaAluno(
+    BuildContext context,
+    Usuario aluno,
+  ) async {
+    final dao = MatriculaDao();
+    final matricula = await dao.getPrimeiraMatriculaPorUsuario(aluno.id);
+
+    if (matricula != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => AlunoPainel(
+                idAluno: aluno.id,
+                idEstudo: matricula.idEstudoBiblico,
+              ),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MatriculaAlunoScreen(idAluno: aluno.id),
+        ),
+      );
+    }
   }
 
   @override
@@ -111,7 +140,6 @@ class _AlunosPageState extends State<AlunosPage> {
           ..._alunos.asMap().entries.map((entry) {
             final index = entry.key;
             final aluno = entry.value;
-
             final avatarEmoji = sortearEmoji(aluno.sexo);
 
             return Padding(
@@ -119,9 +147,10 @@ class _AlunosPageState extends State<AlunosPage> {
               child: AlunoItem(
                 posicao: index + 1,
                 nome: aluno.nome,
-                pontos: 0, // valor fixo temporário
+                pontos: 0,
                 avatar: avatarEmoji,
                 iconCoroa: 'assets/icons/hex_coroa_cinza.svg',
+                onTap: () => verificarMatriculaAluno(context, aluno),
               ),
             );
           }),
@@ -137,6 +166,7 @@ class AlunoItem extends StatelessWidget {
   final int pontos;
   final String avatar;
   final String? iconCoroa;
+  final VoidCallback onTap;
 
   const AlunoItem({
     super.key,
@@ -145,58 +175,62 @@ class AlunoItem extends StatelessWidget {
     required this.pontos,
     required this.avatar,
     this.iconCoroa,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF6F3FB),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 16,
-            child: Text(
-              posicao.toString(),
-              style: const TextStyle(fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF6F3FB),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 16,
+              child: Text(
+                posicao.toString(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          CircleAvatar(
-            backgroundColor: Colors.pink.shade100,
-            radius: 24,
-            child: Text(avatar, style: const TextStyle(fontSize: 24)),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  nome,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+            const SizedBox(width: 12),
+            CircleAvatar(
+              backgroundColor: Colors.pink.shade100,
+              radius: 24,
+              child: Text(avatar, style: const TextStyle(fontSize: 24)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nome,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(
-                  '$pontos points',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-              ],
+                  Text(
+                    '$pontos points',
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
             ),
-          ),
-          if (iconCoroa != null)
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: const BoxDecoration(shape: BoxShape.circle),
-              child: SvgPicture.asset(iconCoroa!, height: 24, width: 24),
-            ),
-        ],
+            if (iconCoroa != null)
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(shape: BoxShape.circle),
+                child: SvgPicture.asset(iconCoroa!, height: 24, width: 24),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -45,4 +45,24 @@ class MatriculaDao {
     );
     return resultado.isNotEmpty;
   }
+
+  //// Retorna a primeira matrícula de um usuário
+  Future<MatriculaModel?> getPrimeiraMatriculaPorUsuario(
+    String idUsuario,
+  ) async {
+    final db = await AppDatabase.getDatabase();
+    final resultado = await db.query(
+      _tabela,
+      where: 'id_usuario = ?',
+      whereArgs: [idUsuario],
+      orderBy: 'data_matricula DESC',
+      limit: 1,
+    );
+
+    if (resultado.isNotEmpty) {
+      return MatriculaModel.fromMap(resultado.first);
+    }
+
+    return null;
+  }
 }
