@@ -8,6 +8,7 @@ import '../../core/global.dart';
 import '../../models/usuario_model.dart';
 import '../../databases/db_usuario.dart';
 import '../../databases/db_estudos.dart';
+import '../loading/loading_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -113,6 +114,7 @@ class HomePage extends StatelessWidget {
                           backgroundColor: const Color(0xFF0B1121),
                           hoverColor: const Color(0xFF1F2A3F),
                           textColor: Colors.white,
+                          /*
                           onPressed: () async {
                             String cpfLimpo = _cpfController.text.replaceAll(
                               RegExp(r'[^0-9]'),
@@ -252,6 +254,172 @@ class HomePage extends StatelessWidget {
                                 SnackBar(content: Text('Erro ao acessar: $e')),
                               );
                             }
+                          },
+                          */
+                          /*
+                          onPressed: () async {
+                            String cpfLimpo = _cpfController.text.replaceAll(
+                              RegExp(r'[^0-9]'),
+                              '',
+                            );
+
+                            if (cpfLimpo.isEmpty || cpfLimpo.length != 11) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Informe um CPF válido'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => LoadingPage(
+                                      onLoadComplete: () async {
+                                        final usuarioFirebase =
+                                            await _buscarUsuarioNoFirebase(
+                                              cpfLimpo,
+                                            );
+                                        if (usuarioFirebase == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Usuário não cadastrado, por favor crie uma conta.',
+                                              ),
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        final usuarioLocal =
+                                            await DbUsuario.buscarUsuarioPorCpf(
+                                              cpfLimpo,
+                                            );
+                                        if (usuarioLocal == null) {
+                                          await DbUsuario.salvarUsuario(
+                                            usuarioFirebase,
+                                          );
+                                        }
+
+                                        cpfLogado = cpfLimpo;
+
+                                        final usuario =
+                                            await DbUsuario.buscarUsuarioPorCpf(
+                                              cpfLogado!,
+                                            );
+                                        if (usuario != null) {
+                                          nomeUsuarioGlobal = usuario.nome;
+                                          uniaoIdGlobal = usuario.uniaoId;
+                                          uniaoNomeGlobal = usuario.uniaoNome;
+                                          associacaoIdGlobal =
+                                              usuario.associacaoId;
+                                          associacaoNomeGlobal =
+                                              usuario.associacaoNome;
+                                          distritoIdGlobal = usuario.distritoId;
+                                          distritoNomeGlobal =
+                                              usuario.distritoNome;
+                                          igrejaIdGlobal = usuario.igrejaId;
+                                          igrejaNomeGlobal = usuario.igrejaNome;
+                                        }
+
+                                        await DbEstudos.sincronizarEstudosComApi();
+
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => const PageProfessor(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                              ),
+                            );
+                          },
+                          */
+                          onPressed: () async {
+                            String cpfLimpo = _cpfController.text.replaceAll(
+                              RegExp(r'[^0-9]'),
+                              '',
+                            );
+
+                            if (cpfLimpo.isEmpty || cpfLimpo.length != 11) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Informe um CPF válido'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => LoadingPage(
+                                      onLoadComplete: () async {
+                                        final usuarioFirebase =
+                                            await _buscarUsuarioNoFirebase(
+                                              cpfLimpo,
+                                            );
+                                        if (usuarioFirebase == null) {
+                                          if (context.mounted) {
+                                            Navigator.pop(
+                                              context,
+                                            ); // Fecha loading
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Usuário não cadastrado, por favor crie uma conta.',
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          return;
+                                        }
+
+                                        final usuarioLocal =
+                                            await DbUsuario.buscarUsuarioPorCpf(
+                                              cpfLimpo,
+                                            );
+                                        if (usuarioLocal == null) {
+                                          await DbUsuario.salvarUsuario(
+                                            usuarioFirebase,
+                                          );
+                                        }
+
+                                        cpfLogado = cpfLimpo;
+
+                                        final usuario =
+                                            await DbUsuario.buscarUsuarioPorCpf(
+                                              cpfLogado!,
+                                            );
+                                        if (usuario != null) {
+                                          nomeUsuarioGlobal = usuario.nome;
+                                          uniaoIdGlobal = usuario.uniaoId;
+                                          uniaoNomeGlobal = usuario.uniaoNome;
+                                          associacaoIdGlobal =
+                                              usuario.associacaoId;
+                                          associacaoNomeGlobal =
+                                              usuario.associacaoNome;
+                                          distritoIdGlobal = usuario.distritoId;
+                                          distritoNomeGlobal =
+                                              usuario.distritoNome;
+                                          igrejaIdGlobal = usuario.igrejaId;
+                                          igrejaNomeGlobal = usuario.igrejaNome;
+                                        }
+
+                                        await DbEstudos.sincronizarEstudosComApi();
+                                      },
+                                    ),
+                              ),
+                            );
                           },
                         ),
 
