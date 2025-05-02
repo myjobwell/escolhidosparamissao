@@ -50,6 +50,7 @@ class SincronizacaoService {
   }
 
   /// 2. Sincroniza os alunos do professor logado do Firebase para o banco local
+  /*
   static Future<void> sincronizarAlunosDoProfessor(String cpfProfessor) async {
     try {
       print('🔍 Buscando alunos com id_professor == $cpfProfessor');
@@ -97,6 +98,71 @@ class SincronizacaoService {
 
               await DbUsuario.salvarUsuario(novoAluno);
               print('✅ Aluno ${novoAluno.nome} salvo localmente.');
+            }
+          }).toList();
+
+      await Future.wait(tarefas);
+      print('✅ Sincronização de alunos concluída.');
+    } catch (e) {
+      print('❌ Erro ao sincronizar alunos do professor: $e');
+    }
+  }
+  */
+  static Future<void> sincronizarAlunosDoProfessor(String cpfProfessor) async {
+    try {
+      print('🔍 Buscando alunos com id_professor == $cpfProfessor');
+
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('usuarios')
+              .where('id_professor', isEqualTo: cpfProfessor)
+              .get();
+
+      print('📦 ${snapshot.docs.length} alunos encontrados no Firebase.');
+
+      final tarefas =
+          snapshot.docs.map((doc) async {
+            final data = doc.data();
+
+            final String idDocumento = doc.id;
+            final String? cpfFirebase = data['cpf'];
+
+            if (cpfFirebase != null) {
+              final Usuario? alunoLocal = await DbUsuario.buscarUsuarioPorCpf(
+                cpfFirebase,
+              );
+
+              if (alunoLocal == null) {
+                final novoAluno = Usuario(
+                  id: data['id'] ?? idDocumento,
+                  nome: data['nome'] ?? '',
+                  cpf: cpfFirebase,
+                  sexo: data['sexo'] ?? '',
+                  telefone: data['telefone'] ?? '',
+                  email: data['email'] ?? '',
+                  nascimento: data['nascimento'] ?? '',
+                  tipoUsuario: data['tipo_usuario'] ?? '',
+                  divisaoId: data['divisaoId'] ?? 0,
+                  divisaoNome: data['divisaoNome'] ?? '',
+                  uniaoId: data['uniaoId'] ?? 0,
+                  uniaoNome: data['uniaoNome'] ?? '',
+                  associacaoId: data['associacaoId'] ?? 0,
+                  associacaoNome: data['associacaoNome'] ?? '',
+                  distritoId: data['distritoId'] ?? 0,
+                  distritoNome: data['distritoNome'] ?? '',
+                  igrejaId: data['igrejaId'] ?? '',
+                  igrejaNome: data['igrejaNome'] ?? '',
+                  sincronizado: true,
+                  idProfessor: data['id_professor'],
+                );
+
+                await DbUsuario.salvarUsuario(novoAluno);
+                print('✅ Aluno ${novoAluno.nome} salvo localmente.');
+              } else {
+                print('ℹ️ Aluno ${alunoLocal.nome} já existe localmente.');
+              }
+            } else {
+              print('⚠️ Documento "$idDocumento" ignorado: CPF ausente.');
             }
           }).toList();
 
