@@ -77,5 +77,16 @@ class AppDatabase {
       FOREIGN KEY (idLicao) REFERENCES licoes(idLicao) ON DELETE CASCADE ON UPDATE NO ACTION
     )
   ''');
+
+    await db.execute('''
+  CREATE TABLE matriculas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_usuario TEXT,
+    id_estudo_biblico INTEGER,
+    data_matricula TEXT,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY (id_estudo_biblico) REFERENCES estudos_biblicos(id) ON DELETE CASCADE ON UPDATE NO ACTION
+  )
+''');
   }
 }

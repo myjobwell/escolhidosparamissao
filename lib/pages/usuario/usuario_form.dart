@@ -15,7 +15,7 @@ import '../../widgets/forms_widgets/dropdown_igreja_widget.dart';
 import '../../widgets/forms_widgets/campo_data_nascimento_widget.dart';
 import '../../widgets/forms_widgets/campo_sexo_widget.dart';
 import '../../widgets/button.dart';
-import '../../databases/db_usuario.dart';
+import '../../databases/usuario_dao.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
   final Function()? onComplete;

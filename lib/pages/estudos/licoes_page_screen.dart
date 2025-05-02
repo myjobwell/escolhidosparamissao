@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/estudos_biblicos_model.dart';
 import '../../models/licoes_model.dart';
-import '../../databases/db_estudos.dart';
+import '../../databases/estudos_dao.dart';
 import '../../widgets/licao_item_widget.dart';
 import '../../widgets/app_bar.dart';
 import '../estudos/conteudos_screen.dart';

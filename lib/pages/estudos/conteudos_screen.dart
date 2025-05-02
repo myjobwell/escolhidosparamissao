@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/conteudo_model.dart';
 import '../../widgets/app_bar.dart';
-import '../../databases/db_estudos.dart';
+import '../../databases/estudos_dao.dart';
 import '../../widgets/layout_page.dart';
 
 class ConteudosPage extends StatefulWidget {

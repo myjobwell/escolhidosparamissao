@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/FadeInWrapper.dart';
 import '../../widgets/bloco_item_widget.dart';
 import '../../models/estudos_biblicos_model.dart';
-import '../../databases/db_estudos.dart';
+import '../../databases/estudos_dao.dart';
 import '../../widgets/layout_page.dart';
 import '../estudos/licoes_page_screen.dart';
 

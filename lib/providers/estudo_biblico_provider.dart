@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../models/estudos_biblicos_model.dart';
 import '../models/licoes_model.dart';
 import '../models/conteudo_model.dart';
-import '../databases/db_estudos.dart';
+import '../databases/estudos_dao.dart';
 
 class EstudoBiblicoProvider with ChangeNotifier {
   List<EstudoBiblico> _estudos = [];

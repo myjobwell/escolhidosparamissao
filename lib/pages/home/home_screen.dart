@@ -6,8 +6,8 @@ import '../../utils/masks.dart';
 import '../professor/principal_professor_screen.dart';
 import '../../core/global.dart';
 import '../../models/usuario_model.dart';
-import '../../databases/db_usuario.dart';
-import '../../databases/db_estudos.dart';
+import '../../databases/usuario_dao.dart';
+import '../../databases/estudos_dao.dart';
 import '../loading/loading_page.dart';
 import '../../services/sincronizacao_service.dart';
 

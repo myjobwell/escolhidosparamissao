@@ -67,4 +67,24 @@ class DbUsuario {
 
     return result.map((e) => Usuario.fromMap(e, e['cpf'] as String)).toList();
   }
+
+  /// Buscar todos os usuários cujo id_professor seja igual ao CPF logado
+  /// Buscar todos os usuários cujo id_professor seja igual ao CPF logado
+  static Future<List<Usuario>> buscarUsuariosPorProfessor(
+    String cpfProfessor,
+  ) async {
+    final db = await AppDatabase.getDatabase();
+
+    final result = await db.query(
+      'usuarios',
+      where: 'id_professor = ?',
+      whereArgs: [cpfProfessor],
+    );
+
+    return result
+        .map((map) => Usuario.fromMap(map, map['id'] as String))
+        .toList();
+  }
+
+  /// /// Buscar todos os usuários cujo id_professor seja igual ao CPF logado
 }

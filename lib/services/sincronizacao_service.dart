@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/global.dart';
 import '../models/usuario_model.dart';
-import '../databases/db_usuario.dart';
+import '../databases/usuario_dao.dart';
 
 class SincronizacaoService {
   /// Método principal chamado pela aplicação

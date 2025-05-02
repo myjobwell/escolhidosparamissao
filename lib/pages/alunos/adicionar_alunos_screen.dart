@@ -9,7 +9,7 @@ import '../../widgets/forms_widgets/campo_texto_widget.dart';
 import '../../widgets/forms_widgets/campo_data_nascimento_widget.dart';
 import '../../widgets/forms_widgets/campo_sexo_widget.dart';
 import '../../widgets/button.dart';
-import '../../databases/db_usuario.dart';
+import '../../databases/usuario_dao.dart';
 import '../../widgets/layout_page.dart';
 import '../../core/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
