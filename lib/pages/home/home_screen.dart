@@ -9,6 +9,7 @@ import '../../models/usuario_model.dart';
 import '../../databases/db_usuario.dart';
 import '../../databases/db_estudos.dart';
 import '../loading/loading_page.dart';
+import '../../services/sincronizacao_service.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -114,233 +115,7 @@ class HomePage extends StatelessWidget {
                           backgroundColor: const Color(0xFF0B1121),
                           hoverColor: const Color(0xFF1F2A3F),
                           textColor: Colors.white,
-                          /*
-                          onPressed: () async {
-                            String cpfLimpo = _cpfController.text.replaceAll(
-                              RegExp(r'[^0-9]'),
-                              '',
-                            );
 
-                            if (cpfLimpo.isEmpty || cpfLimpo.length != 11) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Informe um CPF válido'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            // Mostra loading
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder:
-                                  (_) => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                            );
-
-                            try {
-                              final usuarioFirebase =
-                                  await _buscarUsuarioNoFirebase(cpfLimpo);
-                              if (usuarioFirebase == null) {
-                                Navigator.of(context).pop(); // Fecha loading
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Usuário não cadastrado, por favor crie uma conta.',
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              final usuarioLocal =
-                                  await DbUsuario.buscarUsuarioPorCpf(cpfLimpo);
-                              if (usuarioLocal == null) {
-                                await DbUsuario.salvarUsuario(usuarioFirebase);
-                              }
-
-                              // Armazenando o CPF logado globalmente
-                              cpfLogado = cpfLimpo;
-
-                              final usuario =
-                                  await DbUsuario.buscarUsuarioPorCpf(
-                                    cpfLogado!,
-                                  );
-                              if (usuario != null) {
-                                nomeUsuarioGlobal = usuario.nome;
-                                uniaoIdGlobal = usuario.uniaoId;
-                                uniaoNomeGlobal = usuario.uniaoNome;
-                                associacaoIdGlobal = usuario.associacaoId;
-                                associacaoNomeGlobal = usuario.associacaoNome;
-                                distritoIdGlobal = usuario.distritoId;
-                                distritoNomeGlobal = usuario.distritoNome;
-                                igrejaIdGlobal = usuario.igrejaId;
-                                igrejaNomeGlobal = usuario.igrejaNome;
-                              }
-
-                              // Verificar se as variáveis globais estão setadas corretamente
-                              if (uniaoIdGlobal == null ||
-                                  uniaoNomeGlobal == null ||
-                                  associacaoIdGlobal == null ||
-                                  associacaoNomeGlobal == null ||
-                                  distritoIdGlobal == null ||
-                                  distritoNomeGlobal == null ||
-                                  igrejaIdGlobal == null ||
-                                  igrejaNomeGlobal == null ||
-                                  cpfLogado == null) {
-                                // Print com os valores das variáveis globais
-                                print(
-                                  'Erro: As variáveis globais não estão setadas corretamente.',
-                                );
-                                print('uniaoIdGlobal: $uniaoIdGlobal');
-                                print('uniaoNomeGlobal: $uniaoNomeGlobal');
-                                print(
-                                  'associacaoIdGlobal: $associacaoIdGlobal',
-                                );
-                                print(
-                                  'associacaoNomeGlobal: $associacaoNomeGlobal',
-                                );
-                                print('distritoIdGlobal: $distritoIdGlobal');
-                                print(
-                                  'distritoNomeGlobal: $distritoNomeGlobal',
-                                );
-                                print('igrejaIdGlobal: $igrejaIdGlobal');
-                                print('igrejaNomeGlobal: $igrejaNomeGlobal');
-                                print('cpfLogado: $cpfLogado');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Erro: Variáveis globais não configuradas corretamente.',
-                                    ),
-                                  ),
-                                );
-                                return;
-                              } else {
-                                print(
-                                  'Variáveis globais carregadas corretamente.',
-                                );
-                                print('uniaoIdGlobal: $uniaoIdGlobal');
-                                print('uniaoNomeGlobal: $uniaoNomeGlobal');
-                                print(
-                                  'associacaoIdGlobal: $associacaoIdGlobal',
-                                );
-                                print(
-                                  'associacaoNomeGlobal: $associacaoNomeGlobal',
-                                );
-                                print('distritoIdGlobal: $distritoIdGlobal');
-                                print(
-                                  'distritoNomeGlobal: $distritoNomeGlobal',
-                                );
-                                print('igrejaIdGlobal: $igrejaIdGlobal');
-                                print('igrejaNomeGlobal: $igrejaNomeGlobal');
-                                print('cpfLogado: $cpfLogado');
-                              }
-
-                              await DbEstudos.sincronizarEstudosComApi();
-
-                              Navigator.of(context).pop(); // Fecha loading
-
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const PageProfessor(),
-                                ),
-                              );
-                            } catch (e) {
-                              Navigator.of(context).pop(); // Fecha loading
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Erro ao acessar: $e')),
-                              );
-                            }
-                          },
-                          */
-                          /*
-                          onPressed: () async {
-                            String cpfLimpo = _cpfController.text.replaceAll(
-                              RegExp(r'[^0-9]'),
-                              '',
-                            );
-
-                            if (cpfLimpo.isEmpty || cpfLimpo.length != 11) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Informe um CPF válido'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => LoadingPage(
-                                      onLoadComplete: () async {
-                                        final usuarioFirebase =
-                                            await _buscarUsuarioNoFirebase(
-                                              cpfLimpo,
-                                            );
-                                        if (usuarioFirebase == null) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                'Usuário não cadastrado, por favor crie uma conta.',
-                                              ),
-                                            ),
-                                          );
-                                          return;
-                                        }
-
-                                        final usuarioLocal =
-                                            await DbUsuario.buscarUsuarioPorCpf(
-                                              cpfLimpo,
-                                            );
-                                        if (usuarioLocal == null) {
-                                          await DbUsuario.salvarUsuario(
-                                            usuarioFirebase,
-                                          );
-                                        }
-
-                                        cpfLogado = cpfLimpo;
-
-                                        final usuario =
-                                            await DbUsuario.buscarUsuarioPorCpf(
-                                              cpfLogado!,
-                                            );
-                                        if (usuario != null) {
-                                          nomeUsuarioGlobal = usuario.nome;
-                                          uniaoIdGlobal = usuario.uniaoId;
-                                          uniaoNomeGlobal = usuario.uniaoNome;
-                                          associacaoIdGlobal =
-                                              usuario.associacaoId;
-                                          associacaoNomeGlobal =
-                                              usuario.associacaoNome;
-                                          distritoIdGlobal = usuario.distritoId;
-                                          distritoNomeGlobal =
-                                              usuario.distritoNome;
-                                          igrejaIdGlobal = usuario.igrejaId;
-                                          igrejaNomeGlobal = usuario.igrejaNome;
-                                        }
-
-                                        await DbEstudos.sincronizarEstudosComApi();
-
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (_) => const PageProfessor(),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                              ),
-                            );
-                          },
-                          */
                           onPressed: () async {
                             String cpfLimpo = _cpfController.text.replaceAll(
                               RegExp(r'[^0-9]'),
@@ -414,6 +189,10 @@ class HomePage extends StatelessWidget {
                                           igrejaIdGlobal = usuario.igrejaId;
                                           igrejaNomeGlobal = usuario.igrejaNome;
                                         }
+
+                                        await SincronizacaoService.sincronizarAlunosDoProfessor(
+                                          cpfLimpo,
+                                        );
 
                                         await DbEstudos.sincronizarEstudosComApi();
                                       },
