@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/global.dart';
 import '../../widgets/card_widget.dart';
-import '../../widgets/lista_de_alunos.dart';
+//import '../../widgets/lista_de_alunos.dart';
 import '../../databases/usuario_dao.dart';
 import '../estudos/estudos_biblicos_screen.dart';
 import '../../widgets/FadeInWrapper.dart';
