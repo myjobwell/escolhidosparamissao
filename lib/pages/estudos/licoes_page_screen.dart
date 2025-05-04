@@ -64,7 +64,7 @@ class _LicoesPageState extends State<LicoesPage> {
             child: LicaoItemWidget(
               numero: index + 1,
               titulo: licao.nome,
-              concluida: true,
+              concluido: 1,
             ),
           );
         }),

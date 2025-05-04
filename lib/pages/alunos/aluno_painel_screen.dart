@@ -6,6 +6,8 @@ import '../../models/licoes_model.dart';
 import '../../models/estudos_biblicos_model.dart';
 import '../../databases/estudos_dao.dart';
 import '../estudos/conteudos_screen.dart';
+import '../../databases/licoes_dadas_dao.dart';
+import '../../models/licoes_dadas_model.dart'; // ❗ Adicione essa linha
 
 class AlunoPainel extends StatefulWidget {
   final String idAluno;
@@ -48,6 +50,14 @@ class _AlunoPainelState extends State<AlunoPainel> {
     });
   }
 
+  Future<Map<int, int>> carregarLicoesDadas() async {
+    final dao = LicoesDadasDao();
+    return await dao.buscarStatusLicoesChecadas(
+      idUsuario: widget.idAluno,
+      idEstudoBiblico: widget.idEstudo,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BasePage(
@@ -86,56 +96,84 @@ class _AlunoPainelState extends State<AlunoPainel> {
 
               final licoes = snapshot.data!;
 
-              return Column(
-                children: List.generate(licoes.length, (index) {
-                  final licao = licoes[index];
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        idLicaoSelecionada = licao.id; // ✅ Armazena o idLicao
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) => ConteudosPage(
-                                idLicao: licao.id,
-                                tituloLicao: licao.nome,
+              return FutureBuilder<Map<int, int>>(
+                future: carregarLicoesDadas(), // ← carrega os dados com checado
+                builder: (context, dadoSnapshot) {
+                  if (!dadoSnapshot.hasData) {
+                    return const SizedBox();
+                  }
+
+                  final licoesDadasMap = dadoSnapshot.data!;
+
+                  return Column(
+                    children: List.generate(licoes.length, (index) {
+                      final licao = licoes[index];
+                      final concluido = licoesDadasMap[licao.id] ?? 0;
+
+                      return LicaoItemWidget(
+                        numero: index + 1,
+                        titulo: licao.nome,
+                        concluido: concluido,
+                        onTituloTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => ConteudosPage(
+                                    idLicao: licao.id,
+                                    tituloLicao: licao.nome,
+                                  ),
+                            ),
+                          );
+                        },
+                        /*
+                        onConcluirTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Item da lição ${licao.nome} apertado',
                               ),
-                        ),
+                            ),
+                          );
+                        },
+                        */
+                        onConcluirTap: () async {
+                          final dao =
+                              LicoesDadasDao(); // certifique-se de importar corretamente
+
+                          // Busca se já existe registro
+                          final existente = await dao
+                              .buscarPorUsuarioEstudoLicao(
+                                widget.idAluno,
+                                widget.idEstudo,
+                                licao.id,
+                              );
+
+                          if (existente != null) {
+                            // Alterna checado: se 1 vira 0, se 0 vira 1
+                            final atualizado = existente.copyWith(
+                              checado: !existente.checado,
+                            );
+                            await dao.atualizar(atualizado);
+                          } else {
+                            // Cria novo com checado = true
+                            final nova = LicoesDadas(
+                              idUsuario: widget.idAluno,
+                              idEstudoBiblico: widget.idEstudo,
+                              idLicao: licao.id,
+                              sincronizado: 0,
+                              checado: true,
+                            );
+                            await dao.salvar(nova);
+                          }
+
+                          // Atualiza a interface
+                          setState(() {});
+                        },
                       );
-                    },
-                    /*
-                    child: LicaoItemWidget(
-                      numero: index + 1,
-                      titulo: licao.nome,
-                      concluida: false,
-                    ),
-                    */
-                    child: LicaoItemWidget(
-                      numero: index + 1,
-                      titulo: licao.nome,
-                      concluida: false,
-                      onTituloTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => ConteudosPage(
-                                  idLicao: licao.id,
-                                  tituloLicao: licao.nome,
-                                ),
-                          ),
-                        );
-                      },
-                      onConcluirTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Item apertado')),
-                        );
-                      },
-                    ),
+                    }),
                   );
-                }),
+                },
               );
             },
           ),

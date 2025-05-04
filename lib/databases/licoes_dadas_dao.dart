@@ -22,7 +22,7 @@ class LicoesDadasDao {
     return maps.map((map) => LicoesDadas.fromMap(map)).toList();
   }
 
-  // Buscar lição dada por id
+  // Buscar lição dada por ID
   Future<LicoesDadas?> buscarPorId(int id) async {
     final Database db = await AppDatabase.getDatabase();
     final List<Map<String, dynamic>> maps = await db.query(
@@ -61,5 +61,52 @@ class LicoesDadasDao {
     );
 
     return maps.map((map) => LicoesDadas.fromMap(map)).toList();
+  }
+
+  // ✅ Novo método: Buscar o status de conclusão (checado) das lições para um aluno e estudo
+  Future<Map<int, int>> buscarStatusLicoesChecadas({
+    required String idUsuario,
+    required int idEstudoBiblico,
+  }) async {
+    final Database db = await AppDatabase.getDatabase();
+
+    // Consulta todas as lições marcadas como checadas ou não, para o aluno e estudo informado
+    final List<Map<String, dynamic>> resultado = await db.query(
+      tableName,
+      where: 'id_usuario = ? AND id_estudo_biblico = ?',
+      whereArgs: [idUsuario, idEstudoBiblico],
+    );
+
+    // Monta um mapa com chave: idLicao e valor: checado (0 ou 1)
+    final Map<int, int> statusMap = {};
+    for (var item in resultado) {
+      final idLicao = item['idLicao'] as int;
+      final checado = item['checado'] as int;
+      statusMap[idLicao] = checado;
+    }
+
+    return statusMap;
+  }
+
+  // Adicione este método no seu LicoesDadasDao
+
+  Future<LicoesDadas?> buscarPorUsuarioEstudoLicao(
+    String idUsuario,
+    int idEstudoBiblico,
+    int idLicao,
+  ) async {
+    final db = await AppDatabase.getDatabase();
+
+    final resultado = await db.query(
+      tableName,
+      where: 'id_usuario = ? AND id_estudo_biblico = ? AND idLicao = ?',
+      whereArgs: [idUsuario, idEstudoBiblico, idLicao],
+      limit: 1,
+    );
+
+    if (resultado.isNotEmpty) {
+      return LicoesDadas.fromMap(resultado.first);
+    }
+    return null;
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class LicaoItemWidget extends StatelessWidget {
   final int numero;
   final String titulo;
-  final bool concluida;
+  final int concluido; // ✅ agora é inteiro
   final VoidCallback? onTituloTap;
   final VoidCallback? onConcluirTap;
 
@@ -12,7 +12,7 @@ class LicaoItemWidget extends StatelessWidget {
     super.key,
     required this.numero,
     required this.titulo,
-    required this.concluida,
+    required this.concluido, // ✅ recebido na criação
     this.onTituloTap,
     this.onConcluirTap,
   });
@@ -43,7 +43,7 @@ class LicaoItemWidget extends StatelessWidget {
           GestureDetector(
             onTap: onConcluirTap,
             child: SvgPicture.asset(
-              concluida
+              concluido == 1
                   ? 'assets/icons/hex_coroa_verde.svg'
                   : 'assets/icons/hex_coroa_cinza.svg',
               width: 28,
