@@ -9,6 +9,7 @@ import '../../pages/alunos/aluno_painel_screen.dart';
 import '../../pages/alunos/matricula_aluno_screen.dart';
 import '../../models/matricula_model.dart';
 import '../../databases/matriculas_dao.dart';
+import '../../databases/licoes_dadas_dao.dart';
 
 class AlunosPage extends StatefulWidget {
   const AlunosPage({super.key});
@@ -19,6 +20,7 @@ class AlunosPage extends StatefulWidget {
 
 class _AlunosPageState extends State<AlunosPage> {
   List<Usuario> _alunos = [];
+  Map<String, int> _pontosPorAluno = {};
   bool _isLoading = true;
 
   final List<String> emojisMasculinos = [
@@ -56,8 +58,28 @@ class _AlunosPageState extends State<AlunosPage> {
   Future<void> _carregarAlunos() async {
     setState(() => _isLoading = true);
     final alunos = await DbUsuario.buscarUsuariosPorProfessor(cpfLogado!);
+
+    final Map<String, int> pontosTemp = {};
+
+    for (final aluno in alunos) {
+      final matricula = await MatriculaDao().getPrimeiraMatriculaPorUsuario(
+        aluno.id,
+      );
+      if (matricula != null) {
+        final status = await LicoesDadasDao().buscarStatusLicoesChecadas(
+          idUsuario: aluno.id,
+          idEstudoBiblico: matricula.idEstudoBiblico,
+        );
+        final totalConcluidas = status.values.where((v) => v == 1).length;
+        pontosTemp[aluno.id] = totalConcluidas;
+      } else {
+        pontosTemp[aluno.id] = 0;
+      }
+    }
+
     setState(() {
       _alunos = alunos;
+      _pontosPorAluno = pontosTemp;
       _isLoading = false;
     });
   }
@@ -78,6 +100,7 @@ class _AlunosPageState extends State<AlunosPage> {
     return lista.first;
   }
 
+  /*
   Future<void> verificarMatriculaAluno(
     BuildContext context,
     Usuario aluno,
@@ -91,9 +114,9 @@ class _AlunosPageState extends State<AlunosPage> {
         MaterialPageRoute(
           builder:
               (_) => AlunoPainel(
-                idAluno: aluno.id, // ✅ parâmetro idAluno
-                idEstudo: matricula.idEstudoBiblico, // ✅ parâmetro idEstudo
-                nomeAluno: aluno.nome, // ✅ novo parâmetro
+                idAluno: aluno.id,
+                idEstudo: matricula.idEstudoBiblico,
+                nomeAluno: aluno.nome,
               ),
         ),
       );
@@ -109,6 +132,42 @@ class _AlunosPageState extends State<AlunosPage> {
         ),
       );
     }
+  }
+  */
+  Future<void> verificarMatriculaAluno(
+    BuildContext context,
+    Usuario aluno,
+  ) async {
+    final dao = MatriculaDao();
+    final matricula = await dao.getPrimeiraMatriculaPorUsuario(aluno.id);
+
+    if (matricula != null) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => AlunoPainel(
+                idAluno: aluno.id,
+                idEstudo: matricula.idEstudoBiblico,
+                nomeAluno: aluno.nome,
+              ),
+        ),
+      );
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => MatriculaAlunoScreen(
+                idAluno: aluno.id,
+                nomeAluno: aluno.nome,
+              ),
+        ),
+      );
+    }
+
+    // Recarrega os dados após o retorno
+    await _carregarAlunos();
   }
 
   @override
@@ -146,13 +205,14 @@ class _AlunosPageState extends State<AlunosPage> {
             final index = entry.key;
             final aluno = entry.value;
             final avatarEmoji = sortearEmoji(aluno.sexo);
+            final pontos = _pontosPorAluno[aluno.id] ?? 0;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AlunoItem(
                 posicao: index + 1,
                 nome: aluno.nome,
-                pontos: 0,
+                pontos: pontos,
                 avatar: avatarEmoji,
                 iconCoroa: 'assets/icons/hex_coroa_cinza.svg',
                 onTap: () => verificarMatriculaAluno(context, aluno),
@@ -222,7 +282,7 @@ class AlunoItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$pontos points',
+                    '$pontos Licões Concluídas',
                     style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                   ),
                 ],

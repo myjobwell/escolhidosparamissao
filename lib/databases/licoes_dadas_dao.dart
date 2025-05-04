@@ -64,6 +64,7 @@ class LicoesDadasDao {
   }
 
   // ✅ Novo método: Buscar o status de conclusão (checado) das lições para um aluno e estudo
+  /*
   Future<Map<int, int>> buscarStatusLicoesChecadas({
     required String idUsuario,
     required int idEstudoBiblico,
@@ -83,6 +84,30 @@ class LicoesDadasDao {
       final idLicao = item['idLicao'] as int;
       final checado = item['checado'] as int;
       statusMap[idLicao] = checado;
+    }
+
+    return statusMap;
+  }
+  */
+  Future<Map<int, int>> buscarStatusLicoesChecadas({
+    required String idUsuario,
+    required int idEstudoBiblico,
+  }) async {
+    final Database db = await AppDatabase.getDatabase();
+
+    final List<Map<String, dynamic>> resultado = await db.query(
+      tableName,
+      where: 'id_usuario = ? AND id_estudo_biblico = ?',
+      whereArgs: [idUsuario, idEstudoBiblico],
+    );
+
+    final Map<int, int> statusMap = {};
+    for (var item in resultado) {
+      final idLicao = int.tryParse(item['idLicao'].toString());
+      final checado = int.tryParse(item['checado'].toString());
+      if (idLicao != null && checado != null) {
+        statusMap[idLicao] = checado;
+      }
     }
 
     return statusMap;
