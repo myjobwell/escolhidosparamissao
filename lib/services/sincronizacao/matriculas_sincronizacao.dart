@@ -7,6 +7,7 @@ class MatriculasSincronizacao {
 
   static Future<void> sincronizar(String cpfProfessor) async {
     print("📘 Iniciando sincronização de matrículas...");
+
     try {
       final docSnap =
           await FirebaseFirestore.instance
@@ -15,40 +16,48 @@ class MatriculasSincronizacao {
               .get();
 
       if (!docSnap.exists) {
-        print('❌ Documento não encontrado.');
+        print('❌ Documento não encontrado para o CPF: $cpfProfessor');
         return;
       }
 
       final data = docSnap.data();
       if (data == null || !data.containsKey('alunos')) {
-        print('⚠️ Nenhum dado de alunos encontrado.');
+        print('⚠️ Campo "alunos" não encontrado no documento.');
         return;
       }
 
-      final Map<String, dynamic> alunos = data['alunos'];
-      print('📦 ${alunos.length} matrículas encontradas para sincronizar.');
+      // Agora alunos está como um Map agrupado
+      final Map<String, dynamic> alunos = Map<String, dynamic>.from(
+        data['alunos'],
+      );
+      print('📦 ${alunos.length} alunos encontrados.');
 
       for (final entry in alunos.entries) {
         final String alunoId = entry.key;
-        final alunoData = entry.value;
+        final dynamic alunoData = entry.value;
 
-        if (alunoData is Map && alunoData.containsKey('aulas_ministradas')) {
-          final List aulas = alunoData['aulas_ministradas'];
-          for (final aula in aulas) {
-            if (aula is Map && aula.containsKey('id_estudo')) {
-              final novaMatricula = MatriculaModel(
-                idUsuario: alunoId,
-                idEstudoBiblico: aula['id_estudo'],
-                dataMatricula:
-                    aula['data_matricula'] ?? DateTime.now().toIso8601String(),
-                sincronizado: 1,
-              );
-              await _matriculaDao.insertMatricula(novaMatricula);
-              print(
-                '📥 Matrícula inserida: aluno=$alunoId, estudo=${aula['id_estudo']}',
-              );
-            }
+        if (alunoData is Map && alunoData.containsKey('id_estudo')) {
+          final int idEstudo = alunoData['id_estudo'];
+
+          final existe = await _matriculaDao.existsMatricula(alunoId, idEstudo);
+          if (existe) {
+            print(
+              '🔁 Matrícula já existente: aluno=$alunoId, estudo=$idEstudo',
+            );
+            continue;
           }
+
+          final novaMatricula = MatriculaModel(
+            idUsuario: alunoId,
+            idEstudoBiblico: idEstudo,
+            dataMatricula: DateTime.now().toIso8601String(),
+            sincronizado: 1,
+          );
+
+          await _matriculaDao.insertMatricula(novaMatricula);
+          print('📥 Matrícula inserida: aluno=$alunoId, estudo=$idEstudo');
+        } else {
+          print('⚠️ Dados incompletos para aluno=$alunoId');
         }
       }
 
