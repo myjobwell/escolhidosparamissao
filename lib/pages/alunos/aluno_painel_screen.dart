@@ -3,32 +3,65 @@ import '../../widgets/layout_page.dart';
 import '../../widgets/aluno_dashboard_widget.dart';
 import '../../widgets/licao_item_widget.dart';
 import '../../models/licoes_model.dart';
+import '../../models/estudos_biblicos_model.dart';
 import '../../databases/estudos_dao.dart';
 import '../estudos/conteudos_screen.dart';
 
-class AlunoPainel extends StatelessWidget {
+class AlunoPainel extends StatefulWidget {
   final String idAluno;
   final int idEstudo;
+  final String nomeAluno;
 
-  const AlunoPainel({super.key, required this.idAluno, required this.idEstudo});
+  const AlunoPainel({
+    super.key,
+    required this.idAluno,
+    required this.idEstudo,
+    required this.nomeAluno,
+  });
 
-  final int estudoId = 1; // fixo, pode ser tornado dinâmico depois
+  @override
+  State<AlunoPainel> createState() => _AlunoPainelState();
+}
+
+class _AlunoPainelState extends State<AlunoPainel> {
+  String nomeEstudo = '';
+  int totalLicoes = 0;
+  bool carregandoEstudo = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarDadosDoEstudo();
+  }
+
+  // ✅ Novo método para buscar o nome do estudo e o total de lições com base no idEstudo
+  Future<void> _carregarDadosDoEstudo() async {
+    final estudo = await DbEstudos.buscarEstudoPorId(widget.idEstudo);
+    final licoes = await DbEstudos.listarLicoesPorEstudo(widget.idEstudo);
+
+    setState(() {
+      nomeEstudo = estudo?.nome ?? 'Estudo Desconhecido';
+      totalLicoes = licoes.length; // ✅ Aqui armazenamos a contagem das lições
+      carregandoEstudo = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BasePage(
       titulo: 'Painel do Aluno',
-      isLoading: false,
+      isLoading: carregandoEstudo,
       exibirBotaoVoltar: true,
       exibirSaudacao: true,
       centralizarTitulo: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const StudyCard(
-            title: 'Ouvindo a Voz de Deus',
+          StudyCard(
+            title: nomeEstudo,
             completedLessons: 8,
-            totalLessons: 20,
+            totalLessons: totalLicoes,
+            nomeAluno: widget.nomeAluno,
           ),
           const SizedBox(height: 12),
           const Text(
@@ -37,7 +70,7 @@ class AlunoPainel extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           FutureBuilder<List<Licao>>(
-            future: DbEstudos.listarLicoesPorEstudo(estudoId),
+            future: DbEstudos.listarLicoesPorEstudo(widget.idEstudo),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

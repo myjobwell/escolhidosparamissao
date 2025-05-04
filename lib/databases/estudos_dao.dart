@@ -165,4 +165,21 @@ class DbEstudos {
       print('❌ Erro ao sincronizar dados: $e');
     }
   }
+
+  static Future<EstudoBiblico?> buscarEstudoPorId(int id) async {
+    final db = await AppDatabase.getDatabase();
+
+    final resultado = await db.query(
+      'estudos_biblicos', // nome da tabela
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (resultado.isNotEmpty) {
+      return EstudoBiblico.fromMap(resultado.first);
+    }
+
+    return null;
+  }
 }

@@ -91,8 +91,9 @@ class _AlunosPageState extends State<AlunosPage> {
         MaterialPageRoute(
           builder:
               (_) => AlunoPainel(
-                idAluno: aluno.id,
-                idEstudo: matricula.idEstudoBiblico,
+                idAluno: aluno.id, // ✅ parâmetro idAluno
+                idEstudo: matricula.idEstudoBiblico, // ✅ parâmetro idEstudo
+                nomeAluno: aluno.nome, // ✅ novo parâmetro
               ),
         ),
       );
@@ -100,7 +101,11 @@ class _AlunosPageState extends State<AlunosPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => MatriculaAlunoScreen(idAluno: aluno.id),
+          builder:
+              (_) => MatriculaAlunoScreen(
+                idAluno: aluno.id,
+                nomeAluno: aluno.nome,
+              ),
         ),
       );
     }

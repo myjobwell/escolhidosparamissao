@@ -12,8 +12,13 @@ import '../../services/sincronizacao/matriculas_sincronizacao.dart'; // atualiza
 
 class MatriculaAlunoScreen extends StatefulWidget {
   final String idAluno;
+  final String nomeAluno;
 
-  const MatriculaAlunoScreen({super.key, required this.idAluno});
+  const MatriculaAlunoScreen({
+    super.key,
+    required this.idAluno,
+    required this.nomeAluno,
+  });
 
   @override
   State<MatriculaAlunoScreen> createState() => _MatriculaAlunoScreenState();
@@ -75,7 +80,12 @@ class _MatriculaAlunoScreenState extends State<MatriculaAlunoScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => AlunoPainel(idAluno: idAluno, idEstudo: idEstudo),
+        builder:
+            (_) => AlunoPainel(
+              idAluno: idAluno,
+              idEstudo: idEstudo,
+              nomeAluno: 'Nome do Aluno',
+            ),
       ),
     );
   }
