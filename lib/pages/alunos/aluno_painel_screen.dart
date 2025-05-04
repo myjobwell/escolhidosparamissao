@@ -26,7 +26,9 @@ class AlunoPainel extends StatefulWidget {
 class _AlunoPainelState extends State<AlunoPainel> {
   String nomeEstudo = '';
   int totalLicoes = 0;
+  int completedLessons = 0;
   bool carregandoEstudo = true;
+  int? idLicaoSelecionada;
 
   @override
   void initState() {
@@ -59,7 +61,7 @@ class _AlunoPainelState extends State<AlunoPainel> {
         children: [
           StudyCard(
             title: nomeEstudo,
-            completedLessons: 8,
+            completedLessons: completedLessons,
             totalLessons: totalLicoes,
             nomeAluno: widget.nomeAluno,
           ),
@@ -89,6 +91,9 @@ class _AlunoPainelState extends State<AlunoPainel> {
                   final licao = licoes[index];
                   return GestureDetector(
                     onTap: () {
+                      setState(() {
+                        idLicaoSelecionada = licao.id; // ✅ Armazena o idLicao
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -100,10 +105,34 @@ class _AlunoPainelState extends State<AlunoPainel> {
                         ),
                       );
                     },
+                    /*
                     child: LicaoItemWidget(
                       numero: index + 1,
                       titulo: licao.nome,
                       concluida: false,
+                    ),
+                    */
+                    child: LicaoItemWidget(
+                      numero: index + 1,
+                      titulo: licao.nome,
+                      concluida: false,
+                      onTituloTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => ConteudosPage(
+                                  idLicao: licao.id,
+                                  tituloLicao: licao.nome,
+                                ),
+                          ),
+                        );
+                      },
+                      onConcluirTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Item apertado')),
+                        );
+                      },
                     ),
                   );
                 }),
