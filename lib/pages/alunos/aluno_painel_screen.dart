@@ -8,6 +8,7 @@ import '../../databases/estudos_dao.dart';
 import '../estudos/conteudos_screen.dart';
 import '../../databases/licoes_dadas_dao.dart';
 import '../../models/licoes_dadas_model.dart';
+import '../../services/sincronizacao/firebase_licoes_dadas_service.dart';
 
 class AlunoPainel extends StatefulWidget {
   final String idAluno;
@@ -59,6 +60,7 @@ class _AlunoPainelState extends State<AlunoPainel> {
     });
   }
 
+  /*
   Future<bool> _alternarConclusao(Licao licao) async {
     final dao = LicoesDadasDao();
 
@@ -93,6 +95,60 @@ class _AlunoPainelState extends State<AlunoPainel> {
 
       return true;
     }
+  }
+  */
+
+  Future<bool> _alternarConclusao(Licao licao) async {
+    final dao = LicoesDadasDao();
+
+    final existente = await dao.buscarPorUsuarioEstudoLicao(
+      widget.idAluno,
+      widget.idEstudo,
+      licao.id,
+    );
+
+    late LicoesDadas atualizada;
+
+    if (existente != null) {
+      atualizada = existente.copyWith(
+        checado: !existente.checado,
+        sincronizado: 0,
+      );
+      await dao.atualizar(atualizada);
+    } else {
+      atualizada = LicoesDadas(
+        idUsuario: widget.idAluno,
+        idEstudoBiblico: widget.idEstudo,
+        idLicao: licao.id,
+        sincronizado: 0,
+        checado: true,
+      );
+      await dao.salvar(atualizada);
+    }
+
+    // 🟡 Chama a sincronização com Firebase
+    try {
+      await FirebaseLicoesService.sincronizarLicao(atualizada);
+
+      // 🟢 Marca como sincronizado localmente após sucesso
+      final lAtual = await dao.buscarPorUsuarioEstudoLicao(
+        widget.idAluno,
+        widget.idEstudo,
+        licao.id,
+      );
+      if (lAtual != null && lAtual.id != null) {
+        await dao.atualizar(lAtual.copyWith(sincronizado: 1));
+      }
+    } catch (e) {
+      debugPrint('Erro ao sincronizar com Firebase: $e');
+    }
+
+    // Atualiza o estado da UI
+    setState(() {
+      licoesDadasMap[licao.id] = atualizada.checado ? 1 : 0;
+    });
+
+    return atualizada.checado;
   }
 
   @override

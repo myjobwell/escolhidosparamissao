@@ -100,40 +100,7 @@ class _AlunosPageState extends State<AlunosPage> {
     return lista.first;
   }
 
-  /*
-  Future<void> verificarMatriculaAluno(
-    BuildContext context,
-    Usuario aluno,
-  ) async {
-    final dao = MatriculaDao();
-    final matricula = await dao.getPrimeiraMatriculaPorUsuario(aluno.id);
-
-    if (matricula != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder:
-              (_) => AlunoPainel(
-                idAluno: aluno.id,
-                idEstudo: matricula.idEstudoBiblico,
-                nomeAluno: aluno.nome,
-              ),
-        ),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder:
-              (_) => MatriculaAlunoScreen(
-                idAluno: aluno.id,
-                nomeAluno: aluno.nome,
-              ),
-        ),
-      );
-    }
-  }
-  */
+  /// Verifica se o aluno já possui matrícula e navega para a tela correspondente.
   Future<void> verificarMatriculaAluno(
     BuildContext context,
     Usuario aluno,
