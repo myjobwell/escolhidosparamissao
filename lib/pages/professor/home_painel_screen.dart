@@ -3,6 +3,7 @@ import '../../core/global.dart';
 import '../../databases/usuario_dao.dart';
 import '../../widgets/FadeInWrapper.dart';
 import '../../widgets/layout_home.dart';
+import '../../widgets/resumo_painel_professor_widget.dart';
 
 class HomePainel extends StatefulWidget {
   const HomePainel({super.key});
@@ -43,9 +44,17 @@ class _HomePainelState extends State<HomePainel> {
     return BasePageHome(
       titulo: 'Painel Inicial',
       isLoading: isLoading,
-      nomeUsuario: nomeUsuario, // ✅ Passando o nome corretamente
+      nomeUsuario: nomeUsuario,
       child: const FadeInWrapper(
-        child: SizedBox.shrink(), // tela vazia por enquanto
+        child: Column(
+          children: [
+            ResumoPainelProfessor(
+              totalEstudos: 10,
+              totalAulas: 151,
+              ranking: 56,
+            ),
+          ],
+        ),
       ),
     );
   }

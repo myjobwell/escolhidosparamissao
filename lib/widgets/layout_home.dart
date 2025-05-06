@@ -33,7 +33,7 @@ class BasePageHome extends StatelessWidget {
                 child: Image(
                   image: AssetImage('assets/imgs/logoEscolhidos.png'),
                   width: 250,
-                  height: 180,
+                  height: 150,
                 ),
               ),
             ),
