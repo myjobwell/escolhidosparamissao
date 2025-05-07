@@ -69,7 +69,6 @@ class DbUsuario {
   }
 
   /// Buscar todos os usuários cujo id_professor seja igual ao CPF logado
-  /// Buscar todos os usuários cujo id_professor seja igual ao CPF logado
   static Future<List<Usuario>> buscarUsuariosPorProfessor(
     String cpfProfessor,
   ) async {
@@ -86,5 +85,15 @@ class DbUsuario {
         .toList();
   }
 
-  /// /// Buscar todos os usuários cujo id_professor seja igual ao CPF logado
+  /// Somatório dos usuários por professor
+  static Future<int> contarUsuariosPorProfessor(String cpfProfessor) async {
+    final db = await AppDatabase.getDatabase();
+
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as total FROM usuarios WHERE id_professor = ?',
+      [cpfProfessor],
+    );
+
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
 }

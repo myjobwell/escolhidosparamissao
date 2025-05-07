@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class ResumoPainelProfessor extends StatelessWidget {
   final int totalEstudos;
-  final int totalAulas;
+  final int totalPontos;
   final int ranking;
 
   const ResumoPainelProfessor({
     super.key,
     required this.totalEstudos,
-    required this.totalAulas,
+    required this.totalPontos,
     required this.ranking,
   });
 
@@ -31,9 +31,9 @@ class ResumoPainelProfessor extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildItem(Icons.star_border, 'ESTUDOS', totalEstudos.toString()),
+          _buildItem(Icons.star_border, 'ALUNOS', totalEstudos.toString()),
           _verticalDivider(),
-          _buildItem(Icons.menu_book, 'AULAS', totalAulas.toString()),
+          _buildItem(Icons.menu_book, 'PONTOS', totalPontos.toString()),
           _verticalDivider(),
           _buildItem(Icons.emoji_events, 'RANKING', '#$ranking'),
         ],
