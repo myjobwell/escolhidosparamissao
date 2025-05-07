@@ -88,9 +88,9 @@ class _HomePainelState extends State<HomePainel> {
                   CardWidget(
                     backgroundColor: const Color(0xFF0B1121),
                     image: const AssetImage(
-                      'assets/imgs/logo_meus_estudos.png',
+                      'assets/imgs/logo_estudos_biblicos.png',
                     ),
-                    imageWidth: 100,
+                    imageWidth: 110,
                     imageHeight: 80,
                     onTap: () {
                       Navigator.push(
