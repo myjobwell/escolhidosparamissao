@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'usuario_form.dart';
-import '../professor/principal_professor_screen.dart'; // ✅ Import da PageProfessor
+import '../professor/principal_professor_screen.dart';
+import '../professor/home_painel_screen.dart'; // ✅ Import da PageProfessor
 
 class UsuarioFormPage extends StatelessWidget {
   const UsuarioFormPage({super.key});
@@ -36,7 +37,7 @@ class UsuarioFormPage extends StatelessWidget {
             // ✅ Ao invés de voltar, agora navega para PageProfessor
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const PageProfessor()),
+              MaterialPageRoute(builder: (_) => const HomePainel()),
             );
           },
         ),

@@ -15,15 +15,15 @@ class ResumoPainelProfessor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08), // sombra bem suave
-            blurRadius: 12,
+            blurRadius: 6,
             offset: const Offset(0, 4), // deslocamento vertical
           ),
         ],

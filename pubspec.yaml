@@ -80,6 +80,12 @@ flutter:
     - assets/icons/hex_coroa_dourada.svg
     - assets/icons/hex_coroa_bronze.svg
     - assets/imgs/logoEscolhidos.png
+    - assets/imgs/logo_meus_alunos.png
+    - assets/imgs/logo_meus_estudos.png
+    - assets/imgs/logo_meu_ranking.png
+    - assets/imgs/logo_meu_ranking.png
+    - assets/imgs/l_color_open.png
+    - assets/imgs/my_logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
