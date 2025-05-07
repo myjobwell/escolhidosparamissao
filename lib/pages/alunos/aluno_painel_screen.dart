@@ -9,6 +9,9 @@ import '../estudos/conteudos_screen.dart';
 import '../../databases/licoes_dadas_dao.dart';
 import '../../models/licoes_dadas_model.dart';
 import '../../services/sincronizacao/firebase_licoes_dadas_service.dart';
+import '../../core/global.dart';
+import '../../databases/ranking_dao.dart';
+import '../../databases/app_database.dart';
 
 class AlunoPainel extends StatefulWidget {
   final String idAluno;
@@ -60,44 +63,6 @@ class _AlunoPainelState extends State<AlunoPainel> {
     });
   }
 
-  /*
-  Future<bool> _alternarConclusao(Licao licao) async {
-    final dao = LicoesDadasDao();
-
-    final existente = await dao.buscarPorUsuarioEstudoLicao(
-      widget.idAluno,
-      widget.idEstudo,
-      licao.id,
-    );
-
-    if (existente != null) {
-      final atualizado = existente.copyWith(checado: !existente.checado);
-      await dao.atualizar(atualizado);
-
-      setState(() {
-        licoesDadasMap[licao.id] = atualizado.checado ? 1 : 0;
-      });
-
-      return atualizado.checado;
-    } else {
-      final nova = LicoesDadas(
-        idUsuario: widget.idAluno,
-        idEstudoBiblico: widget.idEstudo,
-        idLicao: licao.id,
-        sincronizado: 0,
-        checado: true,
-      );
-      await dao.salvar(nova);
-
-      setState(() {
-        licoesDadasMap[licao.id] = 1;
-      });
-
-      return true;
-    }
-  }
-  */
-
   Future<bool> _alternarConclusao(Licao licao) async {
     final dao = LicoesDadasDao();
 
@@ -138,6 +103,14 @@ class _AlunoPainelState extends State<AlunoPainel> {
       );
       if (lAtual != null && lAtual.id != null) {
         await dao.atualizar(lAtual.copyWith(sincronizado: 1));
+        // ✅ Atualiza totalAulas no ranking do professor
+        final db = await AppDatabase.getDatabase();
+        final rankingDao = RankingDao(db);
+
+        await rankingDao.atualizarTotalAulas(
+          idProfessor: cpfLogado!,
+          incrementar: lAtual.checado,
+        );
       }
     } catch (e) {
       debugPrint('Erro ao sincronizar com Firebase: $e');

@@ -104,5 +104,18 @@ class AppDatabase {
 )
 
     ''');
+
+    await db.execute('''
+CREATE TABLE ranking (
+  id TEXT PRIMARY KEY,
+  nome TEXT,
+  distritoNome TEXT,
+  igrejaNome TEXT,
+  totalAlunos INTEGER DEFAULT 0,
+  totalAulas INTEGER DEFAULT 0,
+  totalPontos INTEGER DEFAULT 0,
+  updatedAt TEXT
+);
+   ''');
   }
 }
