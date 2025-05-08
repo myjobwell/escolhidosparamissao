@@ -1,0 +1,206 @@
+import 'package:flutter/material.dart';
+
+class Podium extends StatelessWidget {
+  final List<String> nomes;
+  final List<int> pontos;
+  final List<String> sexos;
+
+  Podium({
+    Key? key,
+    required this.nomes,
+    required this.pontos,
+    required this.sexos,
+  }) : super(key: key);
+
+  final List<String> emojisMasculinos = [
+    '👨‍💼',
+    '👨‍🔧',
+    '👨‍🏫',
+    '👨‍🎓',
+    '👨‍🚀',
+    '👨‍⚕️',
+    '👨‍🎨',
+    '👨‍🍳',
+    '👨‍✈️',
+    '👨‍🌾',
+  ];
+
+  final List<String> emojisFemininos = [
+    '👩‍💼',
+    '👩‍🔧',
+    '👩‍🏫',
+    '👩‍🎓',
+    '👩‍🚀',
+    '👩‍⚕️',
+    '👩‍🎨',
+    '👩‍🍳',
+    '👩‍✈️',
+    '👩‍🌾',
+  ];
+
+  String getEmoji(String sexo, int index) {
+    return sexo == 'feminino'
+        ? emojisFemininos[index % emojisFemininos.length]
+        : emojisMasculinos[index % emojisMasculinos.length];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 40), // espaço no topo
+      child: Center(
+        child: SizedBox(
+          width: 300,
+          height: 340, // aumentada para caber tudo
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/imgs/podium.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              // 2º lugar - Esquerda
+              Positioned(
+                left: 10,
+                bottom: 265,
+                child: _buildCompetitor(
+                  nome: nomes[1],
+                  pontos: pontos[1],
+                  emoji: getEmoji(sexos[1], 1),
+                ),
+              ),
+
+              // 1º lugar - Centro
+              Positioned(
+                left: 105,
+                bottom: 295,
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.emoji_events,
+                      color: Colors.amber,
+                      size: 24,
+                    ),
+                    _buildCompetitor(
+                      nome: nomes[0],
+                      pontos: pontos[0],
+                      emoji: getEmoji(sexos[0], 0),
+                    ),
+                  ],
+                ),
+              ),
+
+              // 3º lugar - Direita
+              Positioned(
+                right: 10,
+                bottom: 235,
+                child: _buildCompetitor(
+                  nome: nomes[2],
+                  pontos: pontos[2],
+                  emoji: getEmoji(sexos[2], 2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /*
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: 300,
+        height: 500,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset('assets/imgs/podium.png', fit: BoxFit.contain),
+            ),
+
+            // 2º lugar - Esquerda
+            Positioned(
+              left: 10,
+              bottom: 250,
+              child: _buildCompetitor(
+                nome: nomes[1],
+                pontos: pontos[1],
+                emoji: getEmoji(sexos[1], 1),
+              ),
+            ),
+
+            // 1º lugar - Centro
+            Positioned(
+              left: 105,
+              bottom: 260,
+              child: Column(
+                children: [
+                  const Icon(Icons.emoji_events, color: Colors.amber, size: 24),
+                  _buildCompetitor(
+                    nome: nomes[0],
+                    pontos: pontos[0],
+                    emoji: getEmoji(sexos[0], 0),
+                  ),
+                ],
+              ),
+            ),
+
+            // 3º lugar - Direita
+            Positioned(
+              right: 10,
+              bottom: 230,
+              child: _buildCompetitor(
+                nome: nomes[2],
+                pontos: pontos[2],
+                emoji: getEmoji(sexos[2], 2),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  */
+
+  Widget _buildCompetitor({
+    required String nome,
+    required int pontos,
+    required String emoji,
+  }) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 24,
+          child: Text(emoji, style: const TextStyle(fontSize: 20)),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          nome,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.deepPurple.shade200,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            '$pontos QP',
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+}

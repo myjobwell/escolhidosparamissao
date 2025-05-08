@@ -8,6 +8,7 @@ import '../../widgets/resumo_painel_professor_widget.dart';
 import '../../widgets/card_widget.dart';
 import '../alunos/aluno_screen.dart';
 import '../estudos/estudos_biblicos_screen.dart';
+import '../ranking/ranking_screen.dart';
 
 class HomePainel extends StatefulWidget {
   const HomePainel({super.key});
@@ -104,7 +105,12 @@ class _HomePainelState extends State<HomePainel> {
                     imageWidth: 110,
                     imageHeight: 80,
                     onTap: () {
-                      print('Card clicado');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const RankingPage()),
+                      ).then((_) {
+                        _carregarDadosUsuario(); // Recarrega ao voltar
+                      });
                     },
                   ),
                   CardWidget(

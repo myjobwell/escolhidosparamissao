@@ -46,32 +46,3 @@ class FirebaseLicoesService {
     }, SetOptions(merge: true));
   }
 }
-
-/* import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../models/licoes_dadas_model.dart';
-import '../../core/global.dart'; // para acessar cpfLogado
-
-class FirebaseLicoesService {
-  static Future<void> sincronizarLicao(LicoesDadas licao) async {
-    final firestore = FirebaseFirestore.instance;
-    final docRef = firestore.collection('aulasministradas').doc(cpfLogado);
-
-    final payload = {
-      'id_estudo': {
-        'id': licao.idEstudoBiblico,
-        'data_matricula': '', // se quiser, recupere da matrícula
-        'licoes_dadas': [
-          {
-            'idLicao': licao.idLicao,
-            'checado': licao.checado,
-            'sincronizado': 1,
-          },
-        ],
-      },
-    };
-
-    await docRef.set({
-      'alunos': {licao.idUsuario: payload},
-    }, SetOptions(merge: true));
-  }
-} */

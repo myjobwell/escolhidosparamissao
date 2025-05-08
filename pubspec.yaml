@@ -116,6 +116,8 @@ flutter:
     - assets/imgs/logo_estudos_biblicos.png
     - assets/imgs/l_color_open.png
     - assets/imgs/my_logo.png
+    - assets/imgs/podium.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

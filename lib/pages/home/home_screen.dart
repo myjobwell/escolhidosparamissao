@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Ministério de Pessoal | ANRA/AC',
+                    'Ministério Pessoal | ANRA/AC',
                     style: TextStyle(fontSize: 12, color: Colors.white),
                   ),
                   const SizedBox(height: 40),
