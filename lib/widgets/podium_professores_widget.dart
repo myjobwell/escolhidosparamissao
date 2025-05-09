@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+
 class Professor {
   final String nome;
   final String distrito;
@@ -17,7 +19,8 @@ class Professor {
 class PodiumProfessores extends StatefulWidget {
   final List<Professor> professores;
 
-  const PodiumProfessores({super.key, required this.professores});
+  const PodiumProfessores({Key? key, required this.professores})
+    : super(key: key);
 
   @override
   State<PodiumProfessores> createState() => _PodiumProfessoresState();
@@ -96,6 +99,8 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: _scrollController,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: _displayedProfessores.length,
       itemBuilder: (context, index) {
@@ -104,7 +109,7 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
         final emoji = _getEmoji(professor.sexo, index);
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 4),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -113,7 +118,7 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 20,
+                radius: 12,
                 backgroundColor: const Color(0xFFF0E6FF),
                 child: Text(
                   '$posicao',
@@ -122,7 +127,7 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
               ),
               const SizedBox(width: 12),
               CircleAvatar(
-                radius: 24,
+                radius: 16,
                 backgroundColor:
                     professor.sexo == 'feminino'
                         ? Colors.pink.shade100
