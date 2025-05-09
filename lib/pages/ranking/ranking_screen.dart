@@ -85,7 +85,7 @@ class _RankingPageState extends State<RankingPage> {
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 75),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Podium(),
