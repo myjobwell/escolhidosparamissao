@@ -34,7 +34,6 @@ class AlunoPainel extends StatefulWidget {
 class _AlunoPainelState extends State<AlunoPainel> {
   String nomeEstudo = '';
   int totalLicoes = 0;
-  int completedLessons = 0;
   bool carregandoEstudo = true;
   List<Licao> licoes = [];
   Map<int, int> licoesDadasMap = {};
@@ -69,7 +68,7 @@ class _AlunoPainelState extends State<AlunoPainel> {
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
   }
 
-  Future<bool> _alternarConclusao(Licao licao) async {
+  Future<void> _alternarConclusao(Licao licao) async {
     final dao = LicoesDadasDao();
 
     final existente = await dao.buscarPorUsuarioEstudoLicao(
@@ -104,22 +103,26 @@ class _AlunoPainelState extends State<AlunoPainel> {
       await dao.salvar(atualizada);
     }
 
-    // ✅ Atualiza o ranking local sempre, mesmo offline
+    // ✅ Atualiza a UI imediatamente
+    setState(() {
+      licoesDadasMap[licao.id] = atualizada.checado ? 1 : 0;
+    });
+
+    // ✅ Atualiza ranking local
     final db = await AppDatabase.getDatabase();
     final rankingDao = RankingDao(db);
-
     await rankingDao.atualizarTotalAulas(
       idProfessor: cpfLogado!,
       incrementar: atualizada.checado,
     );
 
+    // 🔄 Tenta sincronizar em segundo plano
     final connectivity = await Connectivity().checkConnectivity();
     final online = connectivity != ConnectivityResult.none;
 
     if (online) {
       try {
         await FirebaseLicoesService.sincronizarLicao(atualizada);
-
         final lAtual = await dao.buscarPorUsuarioEstudoLicao(
           widget.idAluno,
           widget.idEstudo,
@@ -143,12 +146,6 @@ class _AlunoPainelState extends State<AlunoPainel> {
         '📴 Offline. Lição salva localmente. Sincronização futura pendente.',
       );
     }
-
-    setState(() {
-      licoesDadasMap[licao.id] = atualizada.checado ? 1 : 0;
-    });
-
-    return atualizada.checado;
   }
 
   @override
@@ -197,7 +194,9 @@ class _AlunoPainelState extends State<AlunoPainel> {
                     ),
                   );
                 },
-                onConcluirTap: () => _alternarConclusao(licao),
+                onConcluirTap: () async {
+                  await _alternarConclusao(licao);
+                },
               );
             }).toList(),
         ],
