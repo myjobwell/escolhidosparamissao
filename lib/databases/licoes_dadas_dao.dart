@@ -158,6 +158,17 @@ class LicoesDadasDao {
     );
     return maps.map((map) => LicoesDadas.fromMap(map)).toList();
   }
+
+  /// Retorna todas as lições não sincronizadas (sincronizado = 0)
+  Future<List<LicoesDadas>> buscarLicoesNaoSincronizadas() async {
+    final Database db = await _db;
+    final List<Map<String, dynamic>> resultado = await db.query(
+      tableName,
+      where: 'sincronizado = ?',
+      whereArgs: [0],
+    );
+    return resultado.map((map) => LicoesDadas.fromMap(map)).toList();
+  }
 }
 
 
