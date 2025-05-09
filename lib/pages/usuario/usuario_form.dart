@@ -18,7 +18,7 @@ import '../../widgets/button.dart';
 import '../../databases/usuario_dao.dart';
 
 class UsuarioFormWidget extends StatefulWidget {
-  final Function()? onComplete;
+  final Function(String cpf)? onComplete;
   final Usuario? usuario;
 
   const UsuarioFormWidget({super.key, this.onComplete, this.usuario});
@@ -168,7 +168,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
         await DbUsuario.atualizarSincronizacao(usuario.cpf);
       }
 
-      widget.onComplete?.call();
+      widget.onComplete?.call(usuario.cpf);
     }
   }
 
@@ -237,9 +237,7 @@ class _UsuarioFormWidgetState extends State<UsuarioFormWidget> {
                   _selectedIgrejaId = null;
                   _selectedIgrejaNome = null;
                 });
-                if (value != null) {
-                  _filtrarIgrejasPorDistrito(value);
-                }
+                if (value != null) _filtrarIgrejasPorDistrito(value);
               },
               showErrors: _formFoiEnviado,
             ),
