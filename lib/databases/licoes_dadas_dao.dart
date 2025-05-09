@@ -139,10 +139,11 @@ class LicoesDadasDao {
   }
 
   /// Soma das lições dadas
-  static Future<int> contarLicoesChecadas() async {
+  static Future<int> contarLicoesChecadasPorProfessor(String cpfLogado) async {
     final db = await AppDatabase.getDatabase();
     final result = await db.rawQuery(
-      'SELECT COUNT(*) as total FROM licoesDadas WHERE checado = 1',
+      'SELECT COUNT(*) as total FROM licoesDadas WHERE checado = 1 AND id_professor = ?',
+      [cpfLogado],
     );
     return Sqflite.firstIntValue(result) ?? 0;
   }

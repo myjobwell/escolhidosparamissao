@@ -182,7 +182,9 @@ class HomePage extends StatelessWidget {
                                         }
 
                                         print('🔄 Sincronizando dados...');
-                                        await SincronizacaoService.sincronizarTudo();
+                                        await SincronizacaoService.sincronizarTudo(
+                                          cpfLimpo,
+                                        );
                                         await DbEstudos.sincronizarEstudosComApi();
                                       },
                                     ),

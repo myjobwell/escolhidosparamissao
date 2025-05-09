@@ -36,7 +36,8 @@ class _HomePainelState extends State<HomePainel> {
       final totalUsuarios = await DbUsuario.contarUsuariosPorProfessor(
         cpfLogado!,
       );
-      final totalChecadas = await LicoesDadasDao.contarLicoesChecadas();
+      final totalChecadas =
+          await LicoesDadasDao.contarLicoesChecadasPorProfessor(cpfLogado!);
 
       print('Total usuários vinculados: $totalUsuarios');
       print('Total lições checadas: $totalChecadas');

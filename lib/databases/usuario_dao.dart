@@ -108,6 +108,22 @@ class DbUsuario {
     }
     return null;
   }
+
+  static Future<Usuario?> buscarUsuarioPorId(String id) async {
+    final db = await AppDatabase.getDatabase();
+    final result = await db.query(
+      'usuarios',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return Usuario.fromMap(result.first, result.first['cpf'] as String);
+    } else {
+      return null;
+    }
+  }
 }
 
 /* import 'package:sqflite/sqflite.dart';

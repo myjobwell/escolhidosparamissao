@@ -51,7 +51,7 @@ class UsuarioFormPage extends StatelessWidget {
               igrejaIdGlobal = usuario.igrejaId;
               igrejaNomeGlobal = usuario.igrejaNome;
 
-              await SincronizacaoService.sincronizarTudo();
+              await SincronizacaoService.sincronizarTudo(cpf);
               await DbEstudos.sincronizarEstudosComApi();
             }
 
