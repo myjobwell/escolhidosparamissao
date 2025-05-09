@@ -7,7 +7,6 @@ class RankingDao {
 
   RankingDao(this.db);
 
-  // 🔄 Insere ou atualiza (replace) localmente
   Future<void> upsertRanking(RankingModel ranking) async {
     await db.insert(
       'ranking',
@@ -16,12 +15,10 @@ class RankingDao {
     );
   }
 
-  // 📥 Inserir um novo (falha se já existe)
   Future<void> insertRanking(RankingModel ranking) async {
     await db.insert('ranking', ranking.toMap());
   }
 
-  // ✏️ Atualizar um existente
   Future<void> updateRanking(RankingModel ranking) async {
     await db.update(
       'ranking',
@@ -31,7 +28,6 @@ class RankingDao {
     );
   }
 
-  // 🔍 Buscar por ID
   Future<RankingModel?> getRankingById(String id) async {
     final result = await db.query(
       'ranking',
@@ -46,18 +42,15 @@ class RankingDao {
     return null;
   }
 
-  // 📋 Buscar todos
   Future<List<RankingModel>> getAllRankings() async {
     final result = await db.query('ranking');
     return result.map((e) => RankingModel.fromMap(e)).toList();
   }
 
-  // ❌ Deletar por ID
   Future<void> deleteRanking(String id) async {
     await db.delete('ranking', where: 'id = ?', whereArgs: [id]);
   }
 
-  // 🔁 Sincronizar com Firestore (envia para Firestore)
   Future<void> syncWithFirestore(RankingModel ranking) async {
     final docRef = FirebaseFirestore.instance
         .collection('ranking')
@@ -69,7 +62,6 @@ class RankingDao {
     });
   }
 
-  // 🧠 Extra: Sincronizar do Firestore para SQLite (opcional)
   Future<void> syncFromFirestore(String id) async {
     final doc =
         await FirebaseFirestore.instance.collection('ranking').doc(id).get();
@@ -79,10 +71,10 @@ class RankingDao {
     }
   }
 
-  // 🔼 Atualiza ou cria ranking ao cadastrar um aluno
   Future<void> registrarCadastroAluno({
     required String id,
     required String nome,
+    required String sexo,
     required String distritoNome,
     required String igrejaNome,
   }) async {
@@ -90,10 +82,10 @@ class RankingDao {
     final rankingExistente = await getRankingById(id);
 
     if (rankingExistente == null) {
-      // Criar novo
       final novo = RankingModel(
         id: id,
         nome: nome,
+        sexo: sexo,
         distritoNome: distritoNome,
         igrejaNome: igrejaNome,
         totalAlunos: 1,
@@ -105,10 +97,10 @@ class RankingDao {
       await syncWithFirestore(novo);
       print("✅ Novo ranking criado para $id");
     } else {
-      // Atualizar existente
       final atualizado = RankingModel(
         id: id,
         nome: rankingExistente.nome,
+        sexo: rankingExistente.sexo,
         distritoNome: rankingExistente.distritoNome,
         igrejaNome: rankingExistente.igrejaNome,
         totalAlunos: rankingExistente.totalAlunos + 1,
@@ -123,7 +115,6 @@ class RankingDao {
     }
   }
 
-  // 🔄 Atualiza o ranking de um aluno com as aulas
   Future<void> atualizarTotalAulas({
     required String idProfessor,
     required bool incrementar,
@@ -139,6 +130,7 @@ class RankingDao {
       final atualizado = RankingModel(
         id: ranking.id,
         nome: ranking.nome,
+        sexo: ranking.sexo,
         distritoNome: ranking.distritoNome,
         igrejaNome: ranking.igrejaNome,
         totalAlunos: ranking.totalAlunos,

@@ -109,6 +109,7 @@ class AppDatabase {
 CREATE TABLE ranking (
   id TEXT PRIMARY KEY,
   nome TEXT,
+  sexo TEXT,
   distritoNome TEXT,
   igrejaNome TEXT,
   totalAlunos INTEGER DEFAULT 0,

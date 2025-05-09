@@ -118,6 +118,7 @@ class _AdicionarAlunoPageState extends State<AdicionarAlunoPage> {
         await rankingDao.registrarCadastroAluno(
           id: cpfLogado!,
           nome: nomeUsuarioGlobal!,
+          sexo: _sexo!, // ✅ agora passando o campo sexo
           distritoNome: distritoNomeGlobal!,
           igrejaNome: igrejaNomeGlobal!,
         );
