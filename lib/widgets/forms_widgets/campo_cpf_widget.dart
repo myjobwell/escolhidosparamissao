@@ -39,7 +39,7 @@ class _CampoCpfWidgetState extends State<CampoCpfWidget> {
             widget.onCpfCheck(false);
           });
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Form.of(context)?.validate();
+            Form.of(context).validate();
           });
         }
       }
@@ -59,7 +59,7 @@ class _CampoCpfWidgetState extends State<CampoCpfWidget> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Form.of(context)?.validate();
+      Form.of(context).validate();
     });
   }
 

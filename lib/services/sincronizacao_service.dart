@@ -1,4 +1,3 @@
-import '../../core/global.dart' as globals;
 import 'sincronizacao/alunos_sincronizacao.dart';
 import 'sincronizacao/usuarios_sincronizacao.dart';
 import 'sincronizacao/matriculas_sincronizacao.dart';

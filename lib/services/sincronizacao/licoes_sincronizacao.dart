@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../databases/licoes_dadas_dao.dart';
 import '../../models/licoes_dadas_model.dart';
-import '../../core/global.dart';
 
 class LicoesSincronizacao {
   static final _licDao = LicoesDadasDao();

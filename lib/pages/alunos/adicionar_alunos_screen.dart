@@ -12,11 +12,8 @@ import '../../databases/usuario_dao.dart';
 import '../../widgets/layout_page.dart';
 import '../../core/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// ✅ Importações para ranking
 import '../../databases/app_database.dart';
 import '../../databases/ranking_dao.dart';
-import '../../models/ranking_model.dart';
 
 class AdicionarAlunoPage extends StatefulWidget {
   const AdicionarAlunoPage({super.key});

@@ -8,7 +8,6 @@ import '../../databases/estudos_dao.dart';
 import '../loading/loading_page.dart';
 import '../../services/sincronizacao_service.dart';
 import '../../services/firebase_usuario_service.dart';
-import '../../pages/usuario/usuario_cadastro_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

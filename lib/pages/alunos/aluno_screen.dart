@@ -7,7 +7,6 @@ import '../../databases/usuario_dao.dart';
 import '../../core/global.dart';
 import '../../pages/alunos/aluno_painel_screen.dart';
 import '../../pages/alunos/matricula_aluno_screen.dart';
-import '../../models/matricula_model.dart';
 import '../../databases/matriculas_dao.dart';
 import '../../databases/licoes_dadas_dao.dart';
 

@@ -1,5 +1,3 @@
-import 'package:mipsmais/databases/app_database.dart'; // Ensure this file contains the definition of AppDatabase
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/usuario_model.dart';
 
@@ -33,7 +31,7 @@ class UsuarioService {
   }
 
   // Atualizar usuário
-  Future<void> atualizarUsuario(Usuario usuario) async {
+  /*   Future<void> atualizarUsuario(Usuario usuario) async {
     final db = await AppDatabase.getDatabase();
     if (usuario.id != null) {
       await db.update(
@@ -43,7 +41,7 @@ class UsuarioService {
         whereArgs: [usuario.id],
       );
     }
-  }
+  } */
 }
 
 class AppDatabase {

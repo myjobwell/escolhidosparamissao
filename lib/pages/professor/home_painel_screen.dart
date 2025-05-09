@@ -46,8 +46,8 @@ class _HomePainelState extends State<HomePainel> {
 
       if (usuario != null) {
         setState(() {
-          nomeUsuario = usuario.nome ?? '';
-          nomeUsuarioGlobal = usuario.nome ?? '';
+          nomeUsuario = usuario.nome;
+          nomeUsuarioGlobal = usuario.nome;
           totalEstudos = totalUsuarios;
           totalPontos = pontos;
           isLoading = false;
