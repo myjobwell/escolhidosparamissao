@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 import '../../widgets/layout_page.dart';
 import '../../widgets/aluno_dashboard_widget.dart';
 import '../../widgets/licao_item_widget.dart';
@@ -76,64 +78,72 @@ class _AlunoPainelState extends State<AlunoPainel> {
       licao.id,
     );
 
-    late LicoesDadas atualizada;
+    final bool novoStatus = !(existente?.checado ?? false);
+
+    final LicoesDadas atualizada =
+        existente != null
+            ? existente.copyWith(
+              checado: novoStatus,
+              sincronizado: 0,
+              idProfessor: cpfLogado,
+              dataUpdate: _dataAtualFormatada(),
+            )
+            : LicoesDadas(
+              idUsuario: widget.idAluno,
+              idEstudoBiblico: widget.idEstudo,
+              idLicao: licao.id,
+              sincronizado: 0,
+              checado: true,
+              idProfessor: cpfLogado,
+              dataUpdate: _dataAtualFormatada(),
+            );
 
     if (existente != null) {
-      // ✅ Atualiza lição existente com data e professor
-      atualizada = existente.copyWith(
-        checado: !existente.checado,
-        sincronizado: 0,
-        idProfessor: cpfLogado,
-        dataUpdate: _dataAtualFormatada(),
-      );
       await dao.atualizar(atualizada);
     } else {
-      // ✅ Cria nova lição com data e professor
-      atualizada = LicoesDadas(
-        idUsuario: widget.idAluno,
-        idEstudoBiblico: widget.idEstudo,
-        idLicao: licao.id,
-        sincronizado: 0,
-        checado: true,
-        idProfessor: cpfLogado,
-        dataUpdate: _dataAtualFormatada(),
-      );
       await dao.salvar(atualizada);
     }
 
-    // 🟡 Chama a sincronização com Firebase
-    try {
-      await FirebaseLicoesService.sincronizarLicao(atualizada);
+    // ✅ Atualiza o ranking local sempre, mesmo offline
+    final db = await AppDatabase.getDatabase();
+    final rankingDao = RankingDao(db);
 
-      // 🟢 Marca como sincronizado localmente após sucesso
-      final lAtual = await dao.buscarPorUsuarioEstudoLicao(
-        widget.idAluno,
-        widget.idEstudo,
-        licao.id,
-      );
-      if (lAtual != null && lAtual.id != null) {
-        await dao.atualizar(
-          lAtual.copyWith(
-            sincronizado: 1,
-            idProfessor: cpfLogado,
-            dataUpdate: _dataAtualFormatada(),
-          ),
+    await rankingDao.atualizarTotalAulas(
+      idProfessor: cpfLogado!,
+      incrementar: atualizada.checado,
+    );
+
+    final connectivity = await Connectivity().checkConnectivity();
+    final online = connectivity != ConnectivityResult.none;
+
+    if (online) {
+      try {
+        await FirebaseLicoesService.sincronizarLicao(atualizada);
+
+        final lAtual = await dao.buscarPorUsuarioEstudoLicao(
+          widget.idAluno,
+          widget.idEstudo,
+          licao.id,
         );
 
-        // ✅ Atualiza totalAulas no ranking do professor
-        final db = await AppDatabase.getDatabase();
-        final rankingDao = RankingDao(db);
-
-        await rankingDao.atualizarTotalAulas(
-          idProfessor: cpfLogado!,
-          incrementar: lAtual.checado,
-        );
+        if (lAtual != null && lAtual.id != null) {
+          await dao.atualizar(
+            lAtual.copyWith(
+              sincronizado: 1,
+              idProfessor: cpfLogado,
+              dataUpdate: _dataAtualFormatada(),
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint('❌ Erro ao sincronizar lição com Firebase: $e');
       }
-    } catch (e) {
-      debugPrint('Erro ao sincronizar com Firebase: $e');
+    } else {
+      print(
+        '📴 Offline. Lição salva localmente. Sincronização futura pendente.',
+      );
     }
 
-    // Atualiza o estado da UI
     setState(() {
       licoesDadasMap[licao.id] = atualizada.checado ? 1 : 0;
     });
