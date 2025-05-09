@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-
 class Professor {
   final String nome;
   final String distrito;
@@ -16,23 +14,10 @@ class Professor {
   });
 }
 
-class PodiumProfessores extends StatefulWidget {
+class PodiumProfessores extends StatelessWidget {
   final List<Professor> professores;
-
-  const PodiumProfessores({Key? key, required this.professores})
-    : super(key: key);
-
-  @override
-  State<PodiumProfessores> createState() => _PodiumProfessoresState();
-}
-
-class _PodiumProfessoresState extends State<PodiumProfessores> {
-  final ScrollController _scrollController = ScrollController();
-  final int _pageSize = 7;
-  int _loadedItems = 0;
-  List<Professor> _displayedProfessores = [];
-
-  final List<String> emojisMasculinos = [
+  final int offset; // começa em 4
+  final List<String> emojisMasculinos = const [
     '👨‍💼',
     '👨‍🔧',
     '👨‍🏫',
@@ -45,7 +30,7 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
     '👨‍🌾',
   ];
 
-  final List<String> emojisFemininos = [
+  final List<String> emojisFemininos = const [
     '👩‍💼',
     '👩‍🔧',
     '👩‍🏫',
@@ -58,36 +43,8 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
     '👩‍🌾',
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadMore();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _loadMore() {
-    final nextItems =
-        widget.professores.skip(_loadedItems).take(_pageSize).toList();
-    setState(() {
-      _displayedProfessores.addAll(nextItems);
-      _loadedItems = _displayedProfessores.length;
-    });
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      if (_loadedItems < widget.professores.length) {
-        _loadMore();
-      }
-    }
-  }
+  PodiumProfessores({Key? key, required this.professores, this.offset = 4})
+    : super(key: key);
 
   String _getEmoji(String sexo, int index) {
     return sexo == 'feminino'
@@ -98,23 +55,21 @@ class _PodiumProfessoresState extends State<PodiumProfessores> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      controller: _scrollController,
+      itemCount: professores.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: _displayedProfessores.length,
       itemBuilder: (context, index) {
-        final professor = _displayedProfessores[index];
-        final posicao = index + 4; // começa a contar do 4
+        final professor = professores[index];
+        final posicao = index + offset;
         final emoji = _getEmoji(professor.sexo, index);
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 4),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: Row(
             children: [
               CircleAvatar(
