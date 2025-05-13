@@ -60,6 +60,21 @@ class RankingDao {
       ...ranking.toMap(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
+
+    final atualizado = RankingModel(
+      id: ranking.id,
+      nome: ranking.nome,
+      sexo: ranking.sexo,
+      distritoNome: ranking.distritoNome,
+      igrejaNome: ranking.igrejaNome,
+      totalAlunos: ranking.totalAlunos,
+      totalAulas: ranking.totalAulas,
+      totalPontos: ranking.totalPontos,
+      updatedAt: ranking.updatedAt,
+      sincronizado: true,
+    );
+
+    await updateRanking(atualizado);
   }
 
   Future<void> syncFromFirestore(String id) async {
@@ -67,7 +82,8 @@ class RankingDao {
         await FirebaseFirestore.instance.collection('ranking').doc(id).get();
     if (doc.exists) {
       final data = RankingModel.fromMap(doc.data()!);
-      await upsertRanking(data);
+      final sincronizado = data.copyWith(sincronizado: true);
+      await upsertRanking(sincronizado);
     }
   }
 
@@ -77,6 +93,7 @@ class RankingDao {
     required String sexo,
     required String distritoNome,
     required String igrejaNome,
+    bool sincronizar = true,
   }) async {
     final now = DateTime.now().toIso8601String();
     final rankingExistente = await getRankingById(id);
@@ -92,9 +109,16 @@ class RankingDao {
         totalAulas: 0,
         totalPontos: 1,
         updatedAt: now,
+        sincronizado: false,
       );
       await insertRanking(novo);
-      await syncWithFirestore(novo);
+      if (sincronizar) {
+        try {
+          await syncWithFirestore(novo);
+        } catch (e) {
+          print("❌ Falha ao sincronizar novo ranking com Firebase: $e");
+        }
+      }
       print("✅ Novo ranking criado para $id");
     } else {
       final atualizado = RankingModel(
@@ -108,9 +132,18 @@ class RankingDao {
         totalPontos:
             (rankingExistente.totalAlunos + 1) + rankingExistente.totalAulas,
         updatedAt: now,
+        sincronizado: false,
       );
       await updateRanking(atualizado);
-      await syncWithFirestore(atualizado);
+      if (sincronizar) {
+        try {
+          await syncWithFirestore(atualizado);
+        } catch (e) {
+          print(
+            "❌ Falha ao sincronizar atualização de ranking com Firebase: $e",
+          );
+        }
+      }
       print("🔁 Ranking atualizado para $id");
     }
   }
@@ -137,11 +170,40 @@ class RankingDao {
         totalAulas: novoTotalAulas,
         totalPontos: novoTotalPontos,
         updatedAt: now,
+        sincronizado: false,
       );
 
       await updateRanking(atualizado);
       await syncWithFirestore(atualizado);
       print("🔁 totalAulas ${incrementar ? '+' : '-'}1 em ${ranking.id}");
     }
+  }
+}
+
+extension on RankingModel {
+  RankingModel copyWith({
+    String? id,
+    String? nome,
+    String? sexo,
+    String? distritoNome,
+    String? igrejaNome,
+    int? totalAlunos,
+    int? totalAulas,
+    int? totalPontos,
+    String? updatedAt,
+    bool? sincronizado,
+  }) {
+    return RankingModel(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      sexo: sexo ?? this.sexo,
+      distritoNome: distritoNome ?? this.distritoNome,
+      igrejaNome: igrejaNome ?? this.igrejaNome,
+      totalAlunos: totalAlunos ?? this.totalAlunos,
+      totalAulas: totalAulas ?? this.totalAulas,
+      totalPontos: totalPontos ?? this.totalPontos,
+      updatedAt: updatedAt ?? this.updatedAt,
+      sincronizado: sincronizado ?? this.sincronizado,
+    );
   }
 }
