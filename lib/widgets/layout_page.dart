@@ -27,7 +27,7 @@ class BasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFF0B1121),
       appBar:
           exibirSaudacao
               ? CustomAppBar(

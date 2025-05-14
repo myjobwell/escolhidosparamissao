@@ -23,11 +23,11 @@ class BackgroundHome extends StatelessWidget {
             left: 60,
             child: _circle(40, const Color(0xFF1E2233)),
           ),
-          Positioned(
+          /* Positioned(
             top: 130,
             left: 120,
             child: _circle(10, const Color(0xFF7A75FF)),
-          ),
+          ), */
 
           // Círculo superior direito
           Positioned(
@@ -40,11 +40,11 @@ class BackgroundHome extends StatelessWidget {
             right: 50,
             child: _circle(40, const Color(0xFF1E2233)),
           ),
-          Positioned(
+          /* Positioned(
             top: 290,
             right: 100,
             child: _circle(10, const Color(0xFF7A75FF)),
-          ),
+          ), */
 
           // Círculo inferior esquerdo
           Positioned(

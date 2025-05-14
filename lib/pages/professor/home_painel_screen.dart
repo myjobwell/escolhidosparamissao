@@ -9,6 +9,7 @@ import '../../widgets/card_widget.dart';
 import '../alunos/aluno_screen.dart';
 import '../estudos/estudos_biblicos_screen.dart';
 import '../ranking/ranking_screen.dart';
+import '../../services/ranking_service.dart';
 
 class HomePainel extends StatefulWidget {
   const HomePainel({super.key});
@@ -22,6 +23,7 @@ class _HomePainelState extends State<HomePainel> {
   int totalEstudos = 0;
   int totalPontos = 0;
   bool isLoading = true;
+  int posicaoRankingUsuario = 0;
 
   @override
   void initState() {
@@ -32,12 +34,16 @@ class _HomePainelState extends State<HomePainel> {
   Future<void> _carregarDadosUsuario() async {
     if (cpfLogado != null) {
       print('CPF Logado: $cpfLogado');
+      final _rankingGeralService = RankingGeralService();
       final usuario = await DbUsuario.buscarUsuarioPorCpf(cpfLogado!);
       final totalUsuarios = await DbUsuario.contarUsuariosPorProfessor(
         cpfLogado!,
       );
       final totalChecadas =
           await LicoesDadasDao.contarLicoesChecadasPorProfessor(cpfLogado!);
+
+      final posicao = await _rankingGeralService.posicaoRanking(cpfLogado!);
+      print('Posição no ranking: $posicao');
 
       print('Total usuários vinculados: $totalUsuarios');
       print('Total lições checadas: $totalChecadas');
@@ -50,6 +56,7 @@ class _HomePainelState extends State<HomePainel> {
           nomeUsuarioGlobal = usuario.nome;
           totalEstudos = totalUsuarios;
           totalPontos = pontos;
+          posicaoRankingUsuario = posicao ?? 0;
           isLoading = false;
         });
       } else {
@@ -78,7 +85,7 @@ class _HomePainelState extends State<HomePainel> {
               child: ResumoPainelProfessor(
                 totalEstudos: totalEstudos,
                 totalPontos: totalPontos,
-                ranking: 56,
+                ranking: posicaoRankingUsuario,
               ),
             ),
             const SizedBox(height: 20),

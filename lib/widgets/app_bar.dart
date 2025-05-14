@@ -31,7 +31,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       padding: EdgeInsets.only(top: topPadding, left: 16, right: 16, bottom: 8),
-      color: const Color(0xFF0B1121),
+      //color: const Color(0xFF0B1121),
+      color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
