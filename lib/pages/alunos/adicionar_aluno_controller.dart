@@ -33,7 +33,7 @@ class AdicionarAlunoController {
     return nome.text.isNotEmpty && sexo != null;
   }
 
-  String _converterDataParaIso(String dataBr) {
+  /*  String _converterDataParaIso(String dataBr) {
     try {
       final partes = dataBr.split('/');
       final dia = int.parse(partes[0]);
@@ -43,7 +43,7 @@ class AdicionarAlunoController {
     } catch (_) {
       return '';
     }
-  }
+  } */
 
   Future<void> cadastrarUsuario(
     BuildContext context,

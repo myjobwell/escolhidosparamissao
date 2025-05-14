@@ -6,6 +6,7 @@ import '../../widgets/background_home.dart';
 import '../../widgets/podium_widget.dart';
 import '../../widgets/podium_professores_widget.dart';
 import '../../services/ranking_service.dart';
+import '../../widgets/app_bar.dart';
 
 class RankingPage extends StatefulWidget {
   const RankingPage({super.key});
@@ -17,7 +18,6 @@ class RankingPage extends StatefulWidget {
 class _RankingPageState extends State<RankingPage> {
   String nomeUsuario = '';
   final int pageSize = 10;
-  final ScrollController _scrollController = ScrollController();
   final RankingGeralService _rankingService = RankingGeralService();
 
   List<Professor> displayedProfessores = [];
@@ -40,53 +40,63 @@ class _RankingPageState extends State<RankingPage> {
 
     if (_isOnline) {
       _loadMore();
-      _scrollController.addListener(() {
-        if (_scrollController.position.pixels >=
-                _scrollController.position.maxScrollExtent - 200 &&
-            !_isLoading &&
-            _hasMore) {
-          _loadMore();
-        }
-      });
     }
   }
 
   Future<void> _loadMore() async {
     if (_isLoading || !_hasMore) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     final nextPage = await _rankingService.getNextRankingPage(
       pageSize: pageSize,
     );
 
     if (nextPage.isEmpty) {
-      _hasMore = false;
-    } else {
       setState(() {
-        displayedProfessores.addAll(
-          nextPage.map(
-            (data) => Professor(
-              nome: data['nome'] ?? 'Sem nome',
-              distrito: data['igrejaNome'] ?? '---',
-              pontos: data['totalPontos'] ?? 0,
-              sexo: data['sexo'] ?? 'masculino',
-            ),
-          ),
-        );
+        _hasMore = false;
+        _isLoading = false;
       });
+      return;
+    }
+
+    final novosProfessores =
+        nextPage
+            .map(
+              (data) => Professor(
+                nome: data['nome'] ?? 'Sem nome',
+                distrito: data['igrejaNome'] ?? '---',
+                pontos: data['totalPontos'] ?? 0,
+                sexo: data['sexo'] ?? 'masculino',
+              ),
+            )
+            .toList();
+
+    final existeDuplicado = novosProfessores.every(
+      (novo) => displayedProfessores.any(
+        (existente) =>
+            existente.nome == novo.nome &&
+            existente.distrito == novo.distrito &&
+            existente.pontos == novo.pontos,
+      ),
+    );
+
+    if (existeDuplicado) {
+      setState(() {
+        _hasMore = false;
+        _isLoading = false;
+      });
+      return;
     }
 
     setState(() {
+      displayedProfessores.addAll(novosProfessores);
       _isLoading = false;
     });
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     _rankingService.resetPagination();
     super.dispose();
   }
@@ -94,23 +104,26 @@ class _RankingPageState extends State<RankingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(
+        titulo: 'Ranking',
+        exibirSaudacao: true,
+        exibirBotaoVoltar: true,
+        centralizarTitulo: true,
+        onBackTap: () => Navigator.of(context).pop(),
+        onSettingsTap: () {},
+      ),
+      /*
       body: BackgroundHome(
         child: SafeArea(
           child:
               _isOnline
-                  ? ListView(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.only(bottom: 32),
+                  ? Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _buildCustomAppBar(context),
-                      ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 0),
                       Center(
                         child: Image.asset(
                           'assets/imgs/l_color_open.png',
-                          height: 50,
+                          height: 60,
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -119,21 +132,32 @@ class _RankingPageState extends State<RankingPage> {
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Podium(),
                       ),
-                      if (displayedProfessores.isNotEmpty)
-                        Padding(
+                      const SizedBox(height: 16),
+                      /* Expanded(
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Transform.translate(
-                            offset: const Offset(0, -140),
+                            offset: const Offset(0, -165),
                             child: PodiumProfessores(
                               professores: displayedProfessores,
+                              onLoadMore: _loadMore,
+                              isLoading: _isLoading,
+                              hasMore: _hasMore,
                             ),
                           ),
                         ),
-                      if (_isLoading)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
+                      ), */
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: PodiumProfessores(
+                            professores: displayedProfessores,
+                            onLoadMore: _loadMore,
+                            isLoading: _isLoading,
+                            hasMore: _hasMore,
+                          ),
                         ),
+                      ),
                     ],
                   )
                   : Center(
@@ -181,41 +205,44 @@ class _RankingPageState extends State<RankingPage> {
                   ),
         ),
       ),
-    );
-  }
-
-  Widget _buildCustomAppBar(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      */
+      body: BackgroundHome(
+        child: SafeArea(
+          child: Stack(
             children: [
-              const Text(
-                'Bem-vindo,',
-                style: TextStyle(fontSize: 14, color: Colors.white54),
+              Column(
+                children: [
+                  const SizedBox(height: 0),
+                  Center(
+                    child: Image.asset(
+                      'assets/imgs/l_color_open.png',
+                      height: 60,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(height: 75),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Podium(),
+                  ),
+                ],
               ),
-              Text(
-                nomeUsuario,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              Positioned(
+                top: 365, // ajuste essa altura como quiser
+                left: 16,
+                right: 16,
+                bottom: 0,
+                child: PodiumProfessores(
+                  professores: displayedProfessores,
+                  onLoadMore: _loadMore,
+                  isLoading: _isLoading,
+                  hasMore: _hasMore,
                 ),
               ),
             ],
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.settings, color: Colors.white),
-          onPressed: () {},
-        ),
-      ],
+      ),
     );
   }
 }

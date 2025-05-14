@@ -9,6 +9,7 @@ import '../../pages/alunos/aluno_painel_screen.dart';
 import '../../pages/alunos/matricula_aluno_screen.dart';
 import '../../databases/matriculas_dao.dart';
 import '../../databases/licoes_dadas_dao.dart';
+import '../../pages/professor/home_painel_screen.dart';
 
 class AlunosPage extends StatefulWidget {
   const AlunosPage({super.key});
@@ -21,6 +22,7 @@ class _AlunosPageState extends State<AlunosPage> {
   List<Usuario> _alunos = [];
   Map<String, int> _pontosPorAluno = {};
   bool _isLoading = true;
+  bool _carregadoPrimeiraVez = false;
 
   final List<String> emojisMasculinos = [
     '👨',
@@ -34,7 +36,6 @@ class _AlunosPageState extends State<AlunosPage> {
     '🧔🏽',
     '🧔🏾',
   ];
-
   final List<String> emojisFemininos = [
     '👩',
     '👩🏻',
@@ -49,15 +50,18 @@ class _AlunosPageState extends State<AlunosPage> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _carregarAlunos();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_carregadoPrimeiraVez) {
+      _carregadoPrimeiraVez = true;
+      _carregarAlunos();
+    }
   }
 
   Future<void> _carregarAlunos() async {
     setState(() => _isLoading = true);
-    final alunos = await DbUsuario.buscarUsuariosPorProfessor(cpfLogado!);
 
+    final alunos = await DbUsuario.buscarUsuariosPorProfessor(cpfLogado!);
     final Map<String, int> pontosTemp = {};
 
     for (final aluno in alunos) {
@@ -87,9 +91,7 @@ class _AlunosPageState extends State<AlunosPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AdicionarAlunoPage()),
-    ).then((_) {
-      _carregarAlunos();
-    });
+    ).then((_) => _carregarAlunos());
   }
 
   String sortearEmoji(String sexo) {
@@ -99,7 +101,6 @@ class _AlunosPageState extends State<AlunosPage> {
     return lista.first;
   }
 
-  /// Verifica se o aluno já possui matrícula e navega para a tela correspondente.
   Future<void> verificarMatriculaAluno(
     BuildContext context,
     Usuario aluno,
@@ -107,8 +108,9 @@ class _AlunosPageState extends State<AlunosPage> {
     final dao = MatriculaDao();
     final matricula = await dao.getPrimeiraMatriculaPorUsuario(aluno.id);
 
+    bool? atualizou;
     if (matricula != null) {
-      await Navigator.push(
+      atualizou = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
           builder:
@@ -120,7 +122,7 @@ class _AlunosPageState extends State<AlunosPage> {
         ),
       );
     } else {
-      await Navigator.push(
+      atualizou = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
           builder:
@@ -132,8 +134,9 @@ class _AlunosPageState extends State<AlunosPage> {
       );
     }
 
-    // Recarrega os dados após o retorno
-    await _carregarAlunos();
+    if (atualizou == true) {
+      await _carregarAlunos();
+    }
   }
 
   @override
@@ -141,8 +144,15 @@ class _AlunosPageState extends State<AlunosPage> {
     return BasePage(
       titulo: 'Meus Alunos',
       isLoading: _isLoading,
+      exibirSaudacao: true,
       exibirBotaoVoltar: true,
       centralizarTitulo: true,
+      onVoltarCustomizado: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePainel()),
+        );
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

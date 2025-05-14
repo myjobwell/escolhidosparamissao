@@ -18,7 +18,7 @@ class AppBarHome extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'BEM VINDO!',
+                  'BEM-VINDO!',
                   style: TextStyle(
                     color: Color(0xFFE6BFD8),
                     fontSize: 13,
